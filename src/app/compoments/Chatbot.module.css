@@ -1,0 +1,43 @@
+
+.container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+  
+  .messageUser {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 10px;
+    background-color: #add8e6;
+    text-align: left;
+  }
+  
+  .messageBot {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 10px;
+    background-color: #90ee90;
+    text-align: right;
+  }
+  
+  .input {
+    padding: 10px;
+    width: calc(100% - 22px);
+    margin-bottom: 5px;
+  }
+  
+  .button {
+    padding: 10px;
+    width: 100%;
+  }
+  .speakButton {
+    margin-left: 10px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #007bff; /* Exemple de couleur, ajustez selon votre design */
+  }
+  
