@@ -1,24 +1,30 @@
-"use client"; // Indique que ce fichier doit être traité comme un composant côté client
-import React, { useState, useRef } from 'react'; // Importation des fonctionnalités de React et useRef
-import axios from 'axios'; // Importation du module Axios pour effectuer des requêtes HTTP
-import styles from '../compoments/Chatbot.module.css'; // Importation des styles CSS du composant
+// Indique que ce fichier doit être traité comme un composant côté client
+"use client";
+import React, { useState, useRef } from 'react'; // Importation de React, useState, et useRef
+import axios from 'axios'; // Importation d'Axios pour les requêtes HTTP
+import styles from '../compoments/Chatbot.module.css'; // Assurez-vous que le chemin est correct
 
-// Définition de l'interface IMessage pour représenter un message dans le chatbot
+// Composant Loader pour l'animation pendant le chargement
+import Loader from '../compoments/Loader'; // Assurez-vous que le chemin d'accès est correct
+
+// Définition de l'interface IMessage
 interface IMessage {
-  author: 'user' | 'bot'; // L'auteur peut être l'utilisateur ou le chatbot
-  content: string; // Contenu textuel du message
-  audioUrl?: string; // URL du blob audio pour le message (optionnel)
+  author: 'user' | 'bot';
+  content: string;
+  audioUrl?: string; // URL optionnelle pour le blob audio
 }
 
-// Définition du composant Chatbot
 const Chatbot: React.FC = () => {
   const [userMessage, setUserMessage] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const audioRef = useRef<HTMLAudioElement | null>(null); // useRef pour gérer l'audio courant
+  const [isLoading, setIsLoading] = useState(false); // État de chargement
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const fetchAudioFromElevenLabs = async (text: string, index: number) => {
+    setIsLoading(true); // Commence le chargement
     const currentMessage = messages[index];
     if (currentMessage.audioUrl) {
+      setIsLoading(false); // Arrête le chargement si l'URL audio existe déjà
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
@@ -67,17 +73,21 @@ const Chatbot: React.FC = () => {
       audioRef.current = audio;
     } catch (error) {
       console.error('Error fetching audio from ElevenLabs:', error);
+    } finally {
+      setIsLoading(false); // Arrête le chargement après la requête
     }
   };
 
   const sendMessageToMistral = async (message: string) => {
     if (!message) return;
+    setIsLoading(true); // Commence le chargement
     setMessages(prev => [...prev, { author: 'user', content: message }]);
 
+    // Contexte LAPI ajouté dans la requête à Mistral
     const lapieContext = [
       {
         "role": "system",
-        "content": "tu es Lapie, un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre.",
+        "content": "tu es Lapie,un perssonage migon inventer tu ne dois pas sortir du perssonage ,  un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre.",
       },
     ];
 
@@ -85,8 +95,8 @@ const Chatbot: React.FC = () => {
       const response = await axios.post(
         'https://api.mistral.ai/v1/chat/completions',
         {
-          model: "mistral-medium",
-          messages: lapieContext.concat([{ role: "user", content: message }]),
+          model: "mistral-large-latest",
+          messages: lapieContext.concat([{ role: "user", content: message }]), // Ajout du message utilisateur au contexte LAPI
           safe_prompt: false
         },
         {
@@ -100,6 +110,8 @@ const Chatbot: React.FC = () => {
       setMessages(prev => [...prev, { author: 'bot', content: lapieResponse }]);
     } catch (error) {
       console.error('Error sending message to Mistral:', error);
+    } finally {
+      setIsLoading(false); // Arrête le chargement après la requête
     }
   };
 
@@ -111,17 +123,18 @@ const Chatbot: React.FC = () => {
 
   return (
     <div>
-      <div className={styles.container}>
+      {/* Ajout d'une div pour l'effet de transparence sur les messages pendant le chargement */}
+      <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
         {messages.map((msg, index) => (
           <div key={index} className={msg.author === 'user' ? styles.messageUser : styles.messageBot}>
             {msg.content}
             {msg.author === 'bot' && (
-              <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)}>
-                🔊 Écouter
-              </button>
+              <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)}>🔊 Écouter</button>
             )}
           </div>
         ))}
+        {/* Le Loader est affiché au-dessus des messages, permettant leur visibilité à travers une transparence */}
+        {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
       </div>
       <form onSubmit={handleFormSubmit}>
         <input
@@ -131,9 +144,7 @@ const Chatbot: React.FC = () => {
           placeholder="Écrivez votre message ici"
           className={styles.input}
         />
-        <button type="submit" className={styles.button}>
-          Envoyer
-        </button>
+        <button type="submit" className={styles.button}>Envoyer</button>
       </form>
     </div>
   );
