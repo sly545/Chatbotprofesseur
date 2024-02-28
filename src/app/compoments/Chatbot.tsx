@@ -39,7 +39,7 @@ const Chatbot: React.FC = () => {
       const options = {
         method: 'POST',
         headers: {
-          'xi-api-key': process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY,
+          'xi-api-key': process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY ?? '' ,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -87,7 +87,7 @@ const Chatbot: React.FC = () => {
     const lapieContext = [
       {
         "role": "system",
-        "content": "tu es Lapie,un perssonage migon inventer tu ne dois pas sortir du perssonage ,  un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre.",
+        "content": "tu es Lapie,un perssonage migon inventer tu ne dois pas sortir du perssonage ,  un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre.Tu utilisera le tutoiment pour paler au enfants",
       },
     ];
 
