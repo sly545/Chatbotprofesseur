@@ -1,42 +1,89 @@
+
 .container {
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 11px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    height: 100vh;
-  }
-  
-  .messageUser {
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 10px;
-    background-color: #add8e6;
-    text-align: left;
-  }
-  
-  .messageBot {
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 10px;
-    background-color: #90ee90;
-    text-align: right;
-  }
-  
-  .input {
-    padding: 10px;
-    width: calc(100% - 22px);
-    margin-bottom: 5px;
-  }
-  
-  .button {
-    padding: 10px;
-    width: 100%;
-  }
-  .speakButton {
-    margin-left: 10px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    color: #007bff; /* Exemple de couleur, ajustez selon votre design */
-  }
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.messageUser {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 10px;
+  background-color: #add8e6;
+  text-align: left;
+}
+
+.messageBot {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 10px;
+  background-color: #90ee90;
+  text-align: right;
+}
+
+.input {
+  padding: 10px;
+  width: calc(100% - 22px);
+  margin-bottom: 5px;
+}
+
+.button {
+  padding: 10px;
+  width: 100%;
+}
+.speakButton {
+  margin-left: 10px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #007bff; /* Exemple de couleur, ajustez selon votre design */
+}
+
+/* Improved button styling */
+.button {
+padding: 10px;
+width: 100%;
+background-color: #007bff; /* Example primary color */
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+
+.button:hover {
+background-color: #0056b3; /* Darker shade for hover */
+}
+
+/* Input field focus state */
+.input:focus {
+border-color: #007bff; /* Highlight color */
+outline: none;
+}
+
+/* Custom scrollbar for container */
+.container::-webkit-scrollbar {
+width: 8px;
+}
+
+.container::-webkit-scrollbar-thumb {
+background: #007bff; /* Scroll thumb color */
+border-radius: 4px;
+}
+
+/* Animation for new messages */
+@keyframes slideIn {
+from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+to {
+  opacity: 1;
+  transform: translateY(0);
+}
+}
+
+.messageUser, .messageBot {
+animation: slideIn 0.3s ease-out;
+}
