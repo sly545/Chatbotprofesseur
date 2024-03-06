@@ -7,7 +7,7 @@ import Chatbot from "./compoments/Chatbot";
 
 export default function Home() {
   return (
-  <div>
+  <div className="test">
     <Chatbot/>
   </div>
   );  

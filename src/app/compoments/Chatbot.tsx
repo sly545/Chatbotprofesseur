@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react'; // Importation de React, useState, et useRef
 import axios from 'axios'; // Importation d'Axios pour les requêtes HTTP
 import styles from '../compoments/Chatbot.module.css'; // Assurez-vous que le chemin est correct
-
+import Carrouselle from './carrouselle';  
 // Composant Loader pour l'animation pendant le chargement
 import Loader from '../compoments/Loader'; // Assurez-vous que le chemin d'accès est correct
 
@@ -95,7 +95,7 @@ const Chatbot: React.FC = () => {
       const response = await axios.post(
         'https://api.mistral.ai/v1/chat/completions',
         {
-          model: "mistral-large-latest",
+          model: "mistral-small",
           messages: lapieContext.concat([{ role: "user", content: message }]), // Ajout du message utilisateur au contexte LAPI
           safe_prompt: false
         },
@@ -120,9 +120,18 @@ const Chatbot: React.FC = () => {
     sendMessageToMistral(userMessage);
     setUserMessage('');
   };
-
+ 
+  const images = [
+    { src: '/images/lapie1.webp', alt: 'Image 1' },
+    { src: '/images/lapie2.webp', alt: 'Image 2' },
+  ];
+    
   return (
-    <div>
+    <div className={styles.chatbotwrap}>
+      <div className={styles.conteneurglobal}>
+        <div className={styles.sizecarou}>  
+      <Carrouselle images={images} />
+      </div>
       {/* Ajout d'une div pour l'effet de transparence sur les messages pendant le chargement */}
       <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
         {messages.map((msg, index) => (
@@ -135,7 +144,7 @@ const Chatbot: React.FC = () => {
         ))}
         {/* Le Loader est affiché au-dessus des messages, permettant leur visibilité à travers une transparence */}
         {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
-      </div>
+       <div className={styles.fromflex}> 
       <form onSubmit={handleFormSubmit}>
         <input
           type="text"
@@ -146,6 +155,9 @@ const Chatbot: React.FC = () => {
         />
         <button type="submit" className={styles.button}>Envoyer</button>
       </form>
+      </div>
+      </div>
+      </div>
     </div>
   );
 };
