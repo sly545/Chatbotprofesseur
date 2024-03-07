@@ -6,6 +6,8 @@ import styles from '../compoments/Chatbot.module.css'; // Assurez-vous que le ch
 import Carrouselle from './carrouselle';  
 // Composant Loader pour l'animation pendant le chargement
 import Loader from '../compoments/Loader'; // Assurez-vous que le chemin d'accès est correct
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
 // Définition de l'interface IMessage
 interface IMessage {
@@ -138,7 +140,10 @@ const Chatbot: React.FC = () => {
           <div key={index} className={msg.author === 'user' ? styles.messageUser : styles.messageBot}>
             {msg.content}
             {msg.author === 'bot' && (
-              <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)}>🔊 Écouter</button>
+              <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon }>
+              <FontAwesomeIcon icon={faVolumeUp} className={styles.iconStyle} />
+            </button>
+            
             )}
           </div>
         ))}

@@ -80,6 +80,24 @@
   background-color: #90ee90;
   text-align: right;
 }
+.buttonWithIcon {
+  background: none; /* Supprime le fond */
+  border: none; /* Supprime la bordure */
+  padding: 6px 6px 6px 6px;
+  margin: 10px;  
+  cursor: pointer;
+  background-color: #add8e6;
+  border-radius: 50%;
+  width: 45px; /* Ajoute le curseur pointer */
+}
+
+/* Vous pouvez également ajouter des styles pour l'icône si nécessaire */
+.iconStyle {
+  color: #007bff; /* La couleur de l'icône, ajustez selon vos besoins */
+  font-size: 24px; /* La taille de l'icône */
+  /* Ajoutez ici d'autres styles si nécessaire */
+}
+
 .inverse{
   display: flex;
   flex-direction: column;
