@@ -2,7 +2,7 @@
 "use client";
 import React, { useState, useRef } from 'react'; // Importation de React, useState, et useRef
 import axios from 'axios'; // Importation d'Axios pour les requêtes HTTP
-import styles from '../compoments/Chatbot.module.css'; // Assurez-vous que le chemin est correct
+import styles from '../compoments/Foxy.module.css'; // Assurez-vous que le chemin est correct
 import Carrouselle from './carrouselle';  
 // Composant Loader pour l'animation pendant le chargement
 import Loader from '../compoments/Loader'; // Assurez-vous que le chemin d'accès est correct
@@ -56,7 +56,7 @@ const Chatbot: React.FC = () => {
         })
       };
 
-      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/39NYW1oeLie2ykDvLsaF?output_format=mp3_22050_32', options);
+      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/OG2Slr3235xGcdCqVh4Z?output_format=mp3_22050_32', options);
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
 
@@ -89,7 +89,12 @@ const Chatbot: React.FC = () => {
     const lapieContext = [
       {
         "role": "system",
-        "content": "tu es Lapie,un perssonage migon inventer tu ne dois pas sortir du perssonage ,  un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre.Tu utilisera le tutoiment pour paler au enfants",
+        "content": "tu est foxy un perssonage sympatique qui est professeur de francais qui aide les enfant avec leur devoir de français ",
+      },
+ 
+      {
+        "role": "system",
+        "content": "tu utilisera le tutoiment ! ",
       },
     ];
 
@@ -123,9 +128,12 @@ const Chatbot: React.FC = () => {
     setUserMessage('');
   };
  
+
+
   const images = [
-    { src: '/images/lapie1.webp', alt: 'Image 1' },
-    { src: '/images/lapie2.webp', alt: 'Image 2' },
+    { src: '/images/foxy1.webp', alt: 'Image 1' },
+    { src: '/images/foxy2.webp', alt: 'Image 2' },
+
   ];
     
   return (
@@ -149,8 +157,8 @@ const Chatbot: React.FC = () => {
         ))}
         {/* Le Loader est affiché au-dessus des messages, permettant leur visibilité à travers une transparence */}
         {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
-       <div className={styles.fromflex}> 
-      <form className={styles.formusize} onSubmit={handleFormSubmit}>
+        
+      <form className={styles.fromflex} onSubmit={handleFormSubmit}>
         <input
           type="text"
           value={userMessage}
@@ -160,7 +168,7 @@ const Chatbot: React.FC = () => {
         />
         <button type="submit" className={styles.button}>Envoyer</button>
       </form>
-      </div>
+      
       </div>
       </div>
     </div>
