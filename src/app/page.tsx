@@ -1,18 +1,51 @@
-// Ajoutez cette ligne au début de votre fichier Chatbot.tsx
-/** @jsxImportSource react */ // Assurez-vous que JSX est correctement traité
-"use client"; // Marque ce composant pour un rendu côté client
+/** @jsxImportSource react */
+"use client";
+import React, { useState } from 'react';
 import Chatbot from "./compoments/Chatbot";
 import Tigrou from "./compoments/Tigrou";
-import Foxy from "./compoments/Foxy"
-
+import Foxy from "./compoments/Foxy";
+import SelectionPerso from './compoments/SelectionCards';
 
 
 export default function Home() {
+  const [activeChatbot, setActiveChatbot] = useState<string | null>(null);
+
+  const handleSelect = (id: string) => {
+    setActiveChatbot(id);
+  };
+
+  const handleBack = () => {
+    setActiveChatbot(null);
+  };
+
+  // Définition d'un objet de couleurs par chatbot
+  const chatbotColors = {
+    Foxie: '#c4b291',
+    Tigrou: '#008B8B',
+    Chatbot: '#007bff',
+  };
+
+  // Obtention de la couleur actuelle en fonction du chatbot actif
+  const currentColor = activeChatbot && Object.hasOwnProperty.call(chatbotColors, activeChatbot) ? chatbotColors[activeChatbot] : '#666';
+
+
+  // Utilisation de React.CSSProperties pour éviter l'erreur TypeScript
+  const containerStyle: React.CSSProperties = {
+    '--back-button-color': currentColor,
+  } as React.CSSProperties;
+
   return (
-  <div>
-    <div>
-    <Foxy/>
+    <div style={containerStyle} className="backButtonContainer">
+      {activeChatbot ? (
+        <>
+          {activeChatbot === 'Foxie' && <Foxy />}
+          {activeChatbot === 'Tigrou' && <Tigrou />}
+          {activeChatbot === 'Chatbot' && <Chatbot />}
+          <button onClick={handleBack} className="backButton">Retour</button>
+        </>
+      ) : (
+        <SelectionPerso onSelect={handleSelect} />
+      )}
     </div>
-  </div>
-  );  
+  );
 }

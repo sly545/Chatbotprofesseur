@@ -14,6 +14,7 @@ interface IMessage {
   author: 'user' | 'bot';
   content: string;
   audioUrl?: string; // URL optionnelle pour le blob audio
+  role: 'user' | 'assistant';
 }
 
 const Chatbot: React.FC = () => {
@@ -56,7 +57,7 @@ const Chatbot: React.FC = () => {
         })
       };
 
-      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/OG2Slr3235xGcdCqVh4Z?output_format=mp3_22050_32', options);
+      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/IrhVuN5bMfotSVUGnqb4?output_format=mp3_22050_32', options);
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
 
@@ -83,19 +84,19 @@ const Chatbot: React.FC = () => {
   const sendMessageToMistral = async (message: string) => {
     if (!message) return;
     setIsLoading(true); // Commence le chargement
-    setMessages(prev => [...prev, { author: 'user', content: message }]);
 
-    // Contexte LAPI ajouté dans la requête à Mistral
-    const lapieContext = [
+    // Ajoute le message de l'utilisateur aux messages
+    setMessages(prev => [...prev, { role: 'user', content: message }]);
+
+    // Prépare le contexte pour l'API avec les deux derniers messages
+    const lastTwoMessages = messages.slice(-2);
+    const updatedLapieContext = [
       {
-        "role": "system",
-        "content": "tu est foxy un perssonage sympatique qui est professeur de francais qui aide les enfant avec leur devoir de français ",
+        role: "system",
+        content: "tu es Foxy, un personnage mignon inventé. Tu es un professeur de Français et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants.",
       },
- 
-      {
-        "role": "system",
-        "content": "tu utilisera le tutoiment ! ",
-      },
+      ...lastTwoMessages,
+      { role: "user", content: message }
     ];
 
     try {
@@ -103,8 +104,13 @@ const Chatbot: React.FC = () => {
         'https://api.mistral.ai/v1/chat/completions',
         {
           model: "mistral-small",
-          messages: lapieContext.concat([{ role: "user", content: message }]), // Ajout du message utilisateur au contexte LAPI
-          safe_prompt: false
+          messages: updatedLapieContext,
+          safe_prompt: false,
+          temperature: 0.5,
+          top_p: 1,
+          max_tokens: 5120,
+          stream: false,
+          random_seed: 1337
         },
         {
           headers: {
@@ -114,14 +120,15 @@ const Chatbot: React.FC = () => {
       );
 
       const lapieResponse = response.data.choices[0].message.content;
-      setMessages(prev => [...prev, { author: 'bot', content: lapieResponse }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: lapieResponse }]);
+      console.log("Contexte actuel pour l'API :", updatedLapieContext);
     } catch (error) {
       console.error('Error sending message to Mistral:', error);
     } finally {
       setIsLoading(false); // Arrête le chargement après la requête
     }
   };
-
+  
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sendMessageToMistral(userMessage);

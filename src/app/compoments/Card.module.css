@@ -1,0 +1,38 @@
+/* components/Card.module.css */
+.card {
+    cursor: pointer;
+    border-radius: 8px;
+    text-align: center;
+    transition: box-shadow 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    --card-hover-shadow-color: #040606;
+    
+  }
+  .card:hover {
+    box-shadow: 0 4px 11px 0px var(--card-hover-shadow-color);
+  }
+  .wrapimgtext{
+    box-shadow: 0 4px 11px 0px #040606;
+    border-radius: 8px;
+    margin: 16px;
+  }
+ 
+  .imgcard{
+    border-radius: 8px 8px 0px 0px;
+    width: 100%;
+  }
+  .card h3 {
+    margin: 12px 0;
+  }
+  
+  .card p {
+    font-size: 14px;
+    color: #666;
+  }
+  .wraptext{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+   
+  }
