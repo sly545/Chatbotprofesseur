@@ -21,7 +21,7 @@ interface IMessage {
 const Chatbot: React.FC = () => {
   const [userMessage, setUserMessage] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [isLoading, setIsLoading] = useState(false); // État de chargement
+  const [isLoading, setIsLoading] = useState(false); // État de chargement.
   const audioRef = useRef<HTMLAudioElement | null>(null);
  
 
@@ -83,7 +83,9 @@ const Chatbot: React.FC = () => {
     }
   };
 
+  // Fonction asynchrone qui envoie un message à Mistral
   const sendMessageToMistral = async (message: string) => {
+   // Vérifie que le message n'est pas vide
     if (!message) return;
     setIsLoading(true); // Commence le chargement
 
@@ -102,17 +104,18 @@ const Chatbot: React.FC = () => {
     ];
 
     try {
+      // Envoie une requête POST à l'API de Mistral
       const response = await axios.post(
         'https://api.mistral.ai/v1/chat/completions',
         {
-          model: "mistral-small",
-          messages: updatedLapieContext,
-          safe_prompt: false,
-          temperature: 0.5,
-          top_p: 1,
-          max_tokens: 5120,
-          stream: false,
-          random_seed: 1337
+          model: "mistral-small", // Modèle utilisé
+          messages: updatedLapieContext, // Contexte de la conversation
+          safe_prompt: false, // Paramètre de sécurité
+          temperature: 0.5, // Température pour générer la réponse
+          top_p: 1, // Limite de probabilité cumulative
+          max_tokens: 5120, // Nombre maximum de tokens pour la réponse
+          stream: false, // Flux de réponse
+          random_seed: 1337 // Graine pour la génération aléatoire
         },
         {
           headers: {
@@ -121,19 +124,25 @@ const Chatbot: React.FC = () => {
         }
       );
 
+       // Récupère la réponse de Mistral et l'ajoute aux messages
       const lapieResponse = response.data.choices[0].message.content;
       setMessages(prev => [...prev, { role: 'assistant', content: lapieResponse }]);
       console.log("Contexte actuel pour l'API :", updatedLapieContext);
     } catch (error) {
+       // Gère les erreurs lors de l'envoi du message à Mistral
       console.error('Error sending message to Mistral:', error);
     } finally {
+        // Désactive l'indicateur de chargement après la requête
       setIsLoading(false); // Arrête le chargement après la requête
     }
   };
   
-
+  // Fonction pour gérer la soumission du formulaire
   const handleFormSubmit = (e: React.FormEvent) => {
+    // Empêche le rechargement de la page lors de la soumission du formulaire
     e.preventDefault();
+
+    // Envoie le message à Mistral et réinitialise le champ de message de l'utilisateur
     sendMessageToMistral(userMessage);
     setUserMessage('');
   };
@@ -146,40 +155,39 @@ const Chatbot: React.FC = () => {
   return (
     <div className={styles.chatbotwrap}>
       <div className={styles.conteneurglobal}>
-        <div className={styles.sizecarou}>  
-      <Carrouselle images={images} />
-      </div>
-      {/* Ajout d'une div pour l'effet de transparence sur les messages pendant le chargement */}
-      <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
-        {messages.map((msg, index) => (
-          <div key={index} className={msg.author === 'user' ? styles.messageUser : styles.messageBot}>
-            {msg.content}
-            {msg.author === 'bot' && (
-              <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon }>
-              <FontAwesomeIcon icon={faVolumeUp} className={styles.iconStyle} />
-            </button>
-            
-            )}
-          </div>
-        ))}
-        {/* Le Loader est affiché au-dessus des messages, permettant leur visibilité à travers une transparence */}
-        {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
-       <div className={styles.fromflex}> 
-      <form className={styles.formusize} onSubmit={handleFormSubmit}>
-        <input
-          type="text"
-          value={userMessage}
-          onChange={(e) => setUserMessage(e.target.value)}
-          placeholder="Écrivez votre message ici"
-          className={styles.input}
-        />
-        <button type="submit" className={styles.button}>Envoyer</button>
-      </form>
-      </div>
-      </div>
+        <div className={styles.sizecarou}>
+          <Carrouselle images={images} />
+        </div>
+        {/* Ajout d'une div pour l'effet de transparence sur les messages pendant le chargement */}
+  
+        <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
+          {messages.map((msg, index) => (
+            <div key={index} className={msg.role === 'user' ? styles.messageUser : styles.messageBot}>
+              {msg.content}
+              {msg.role === 'assistant' && (
+                <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon }>
+                  <FontAwesomeIcon icon={faVolumeUp} className={styles.iconStyle} />
+                </button>
+              )}
+            </div>
+          ))}
+          {/* Le Loader est affiché au-dessus des messages, permettant leur visibilité à travers une transparence */}
+          {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
+          <form className={styles.fromflex} onSubmit={handleFormSubmit}>
+            <input
+              type="text"
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              placeholder="Écrivez votre message ici"
+              className={styles.input}
+            />
+            <button type="submit" className={styles.button}>Envoyer</button>
+          </form>
+        </div>
       </div>
     </div>
   );
+  
 };
 
 export default Chatbot;

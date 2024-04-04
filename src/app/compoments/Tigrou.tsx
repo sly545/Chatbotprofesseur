@@ -147,40 +147,39 @@ const Chatbot: React.FC = () => {
   return (
     <div className={styles.chatbotwrap}>
       <div className={styles.conteneurglobal}>
-        <div className={styles.sizecarou}>  
-      <Carrouselle images={images} />
-      </div>
-      {/* Ajout d'une div pour l'effet de transparence sur les messages pendant le chargement */}
-      <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
-        {messages.map((msg, index) => (
-          <div key={index} className={msg.author === 'user' ? styles.messageUser : styles.messageBot}>
-            {msg.content}
-            {msg.author === 'bot' && (
-              <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon }>
-              <FontAwesomeIcon icon={faVolumeUp} className={styles.iconStyle} />
-            </button>
-            
-            )}
-          </div>
-        ))}
-        {/* Le Loader est affiché au-dessus des messages, permettant leur visibilité à travers une transparence */}
-        {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
-        
-      <form className={styles.fromflex} onSubmit={handleFormSubmit}>
-        <input
-          type="text"
-          value={userMessage}
-          onChange={(e) => setUserMessage(e.target.value)}
-          placeholder="Écrivez votre message ici"
-          className={styles.input}
-        />
-        <button type="submit" className={styles.button}>Envoyer</button>
-      </form>
-      
-      </div>
+        <div className={styles.sizecarou}>
+          <Carrouselle images={images} />
+        </div>
+        {/* Ajout d'une div pour l'effet de transparence sur les messages pendant le chargement */}
+  
+        <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
+          {messages.map((msg, index) => (
+            <div key={index} className={msg.role === 'user' ? styles.messageUser : styles.messageBot}>
+              {msg.content}
+              {msg.role === 'assistant' && (
+                <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon }>
+                  <FontAwesomeIcon icon={faVolumeUp} className={styles.iconStyle} />
+                </button>
+              )}
+            </div>
+          ))}
+          {/* Le Loader est affiché au-dessus des messages, permettant leur visibilité à travers une transparence */}
+          {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
+          <form className={styles.fromflex} onSubmit={handleFormSubmit}>
+            <input
+              type="text"
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              placeholder="Écrivez votre message ici"
+              className={styles.input}
+            />
+            <button type="submit" className={styles.button}>Envoyer</button>
+          </form>
+        </div>
       </div>
     </div>
   );
+  
 };
 
 export default Chatbot;
