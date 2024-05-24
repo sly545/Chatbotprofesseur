@@ -12,6 +12,14 @@
     right: 5%;
   
 }
+body {
+  background-image: url('/images/bureaudetailler.webp'); /* Assurez-vous que le chemin est correct */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
+
 
 .slick-dots{
   bottom: 20px;

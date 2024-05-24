@@ -84,18 +84,18 @@
     margin: 10px ;
     border-radius: 10px;
     background-color: #e2c784;
-    text-align: right;
   }
-  .buttonWithIcon {
-    background: none; /* Supprime le fond */
-    border: none; /* Supprime la bordure */
-    padding: 6px 6px 6px 6px;
-    margin: 10px;  
-    cursor: pointer;
-    background-color: #add8e6;
-    border-radius: 50%;
-    width: 45px; /* Ajoute le curseur pointer */
-  }
+
+.buttonWithIcon {
+  background: none;
+  border: none;
+  padding: 6px;
+  margin: 10px;
+  cursor: pointer;
+  background-color: #e2c784;
+  border-radius: 50%;
+  width: 45px;
+}
   
   /* Vous pouvez également ajouter des styles pour l'icône si nécessaire */
   .iconStyle {
@@ -104,6 +104,15 @@
     /* Ajoutez ici d'autres styles si nécessaire */
   }
   
+  .buttonWithIcon.recognizing {
+    background-color: #1c5c66; /* Changement de couleur */
+    animation: blink 1s infinite; /* Animation de clignotement */
+  }
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
   .inverse{
     display: flex;
     flex-direction: column;
@@ -119,6 +128,32 @@
   .button {
     padding: 10px;
     width: 100%;
+    background-color: #008b8b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .button:hover {
+    background-color: #006666;
+  }
+  .textarea {
+    margin-bottom: 16px;
+    margin-top: 13px;
+    width: 100%;
+    min-height: 40px;
+    resize: none;
+    overflow: hidden;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+  }
+  .textarea:focus {
+    border-color: #007bff;
   }
   .speakButton {
     margin-left: 10px;
@@ -132,7 +167,7 @@
   .button {
   padding: 10px;
   width: 100%;
-  background-color: #c4b291 ; /* Example primary color */
+  background-color: #c4b291  ; /* Example primary color */
   color: white;
   border: none;
   border-radius: 5px;
@@ -143,7 +178,9 @@
   background-color: #008B8B ; /* Darker shade for hover */
   }
   
-  
+  .textarea:focus {
+    border-color: #007bff;
+  }
   /* Animation for new messages */
   @keyframes slideIn {
   from {
@@ -156,6 +193,7 @@
   }
   }
   
-  .messageUser, .messageBot {
-  animation: slideIn 0.3s ease-out;
+  .messageUser,
+  .messageBot {
+    animation: slideIn 0.3s ease-out;
   }

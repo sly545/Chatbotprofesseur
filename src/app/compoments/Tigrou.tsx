@@ -1,35 +1,90 @@
-// Indique que ce fichier doit être traité comme un composant côté client
-"use client";
-import React, { useState, useRef } from 'react'; // Importation de React, useState, et useRef
-import axios from 'axios'; // Importation d'Axios pour les requêtes HTTP
-import styles from '../compoments/Tigrou.module.css'; // Assurez-vous que le chemin est correct
-import Carrouselle from './carrouselle';  
-// Composant Loader pour l'animation pendant le chargement
-import Loader from '../compoments/Loader'; // Assurez-vous que le chemin d'accès est correct
+import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
+import styles from '../compoments/Tigrou.module.css';
+import Carrouselle from './carrouselle';
+import Loader from '../compoments/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faMicrophone } from '@fortawesome/free-solid-svg-icons';
 
-// Définition de l'interface IMessage
 interface IMessage {
-  author: 'user' | 'bot';
   content: string;
-  audioUrl?: string; // URL optionnelle pour le blob audio
+  audioUrl?: string;
   role: 'user' | 'assistant';
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
 }
 
 const Chatbot: React.FC = () => {
   const [userMessage, setUserMessage] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRecognizing, setIsRecognizing] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [hasSaidHello, setHasSaidHello] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.lang = 'fr-FR';
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.continuous = false;
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setUserMessage(prevMessage => prevMessage + ' ' + transcript);
+        setIsRecognizing(false);
+        playSound('stop-sound.mp3');
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech Recognition Error', event);
+        setIsRecognizing(false);
+      };
+
+      recognitionRef.current.onspeechend = () => {
+        recognitionRef.current?.stop();
+        setIsRecognizing(false);
+        playSound('stop-sound.mp3');
+      };
+    } else {
+      console.warn('Speech Recognition not supported in this browser.');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [userMessage]);
+
+  const startVoiceRecognition = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.start();
+      setIsRecognizing(true);
+      playSound('start-sound.mp3');
+    } else {
+      alert("Votre navigateur ne supporte pas la reconnaissance vocale.");
+    }
+  };
+
+  const playSound = (soundFile: string) => {
+    const audio = new Audio(`/sounds/${soundFile}`);
+    audio.play();
+  };
 
   const fetchAudioFromElevenLabs = async (text: string, index: number) => {
-    setIsLoading(true); // Commence le chargement
+    setIsLoading(true);
     const currentMessage = messages[index];
     if (currentMessage.audioUrl) {
-      setIsLoading(false); // Arrête le chargement si l'URL audio existe déjà
+      setIsLoading(false);
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
@@ -44,7 +99,7 @@ const Chatbot: React.FC = () => {
       const options = {
         method: 'POST',
         headers: {
-          'xi-api-key': process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY ?? '' ,
+          'xi-api-key': process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY ?? '',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -59,7 +114,7 @@ const Chatbot: React.FC = () => {
         })
       };
 
-      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/IrhVuN5bMfotSVUGnqb4?output_format=mp3_22050_32', options);
+      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/KmqhNPEmmOndTBOPk4mJ?output_format=mp3_22050_32', options);
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
 
@@ -79,18 +134,16 @@ const Chatbot: React.FC = () => {
     } catch (error) {
       console.error('Error fetching audio from ElevenLabs:', error);
     } finally {
-      setIsLoading(false); // Arrête le chargement après la requête
+      setIsLoading(false);
     }
   };
 
   const sendMessageToMistral = async (message: string) => {
     if (!message) return;
-    setIsLoading(true); // Commence le chargement
+    setIsLoading(true);
 
-    // Ajoute le message de l'utilisateur aux messages
-    setMessages(prev => [...prev, { role: 'user', content: message }]);
+    setMessages(prev => [...prev, { content: message, role: 'user' }]);
 
-    // Prépare le contexte pour l'API avec les deux derniers messages
     const lastTwoMessages = messages.slice(-2);
     const updatedLapieContext = [
       {
@@ -122,64 +175,78 @@ const Chatbot: React.FC = () => {
       );
 
       const lapieResponse = response.data.choices[0].message.content;
-      setMessages(prev => [...prev, { role: 'assistant', content: lapieResponse }]);
-      console.log("Contexte actuel pour l'API :", updatedLapieContext);
+      setMessages(prev => [...prev, { content: lapieResponse, role: 'assistant' }]);
     } catch (error) {
       console.error('Error sending message to Mistral:', error);
     } finally {
-      setIsLoading(false); // Arrête le chargement après la requête
+      setIsLoading(false);
     }
   };
-  
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     sendMessageToMistral(userMessage);
     setUserMessage('');
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleFormSubmit(e as any);
+    }
+  };
 
   const images = [
     { src: '/images/tigrou1.webp', alt: 'Image 1' },
-    { src: '/images/tigrou1.webp', alt: 'Image 2' },
+    { src: '/images/danton-revolution.webp', alt: 'Image 2' },
+    { src: '/images/premierroidefrance.webp', alt: 'Image 3' },
+    { src: '/images/apeldu18.webp', alt: 'Image 4' },
   ];
-    
+
   return (
     <div className={styles.chatbotwrap}>
       <div className={styles.conteneurglobal}>
         <div className={styles.sizecarou}>
           <Carrouselle images={images} />
         </div>
-        {/* Ajout d'une div pour l'effet de transparence sur les messages pendant le chargement */}
-  
         <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
           {messages.map((msg, index) => (
             <div key={index} className={msg.role === 'user' ? styles.messageUser : styles.messageBot}>
-              {msg.content}
+              {msg.content.split('\n').map((line, i) => (
+                <React.Fragment key={i}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))}
               {msg.role === 'assistant' && (
-                <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon }>
+                <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon}>
                   <FontAwesomeIcon icon={faVolumeUp} className={styles.iconStyle} />
                 </button>
               )}
             </div>
           ))}
-          {/* Le Loader est affiché au-dessus des messages, permettant leur visibilité à travers une transparence */}
           {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
           <form className={styles.fromflex} onSubmit={handleFormSubmit}>
-            <input
-              type="text"
+            <textarea
+              ref={textareaRef}
               value={userMessage}
               onChange={(e) => setUserMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="Écrivez votre message ici"
-              className={styles.input}
+              className={styles.textarea}
             />
             <button type="submit" className={styles.button}>Envoyer</button>
+            <button
+              type="button"
+              onClick={startVoiceRecognition}
+              className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}>
+              <FontAwesomeIcon icon={faMicrophone} className={styles.iconStyle} />
+            </button>
           </form>
         </div>
       </div>
     </div>
   );
-  
 };
 
 export default Chatbot;

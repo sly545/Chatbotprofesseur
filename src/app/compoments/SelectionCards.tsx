@@ -17,7 +17,7 @@ const professeursData = [
   {
     id: 'Foxie',
     nom: 'Foxie',
-    image: '/images/foxy1.webp',
+    image: '/images/foxy2.webp',
     description: 'Professeur de français',
     cardBackground: '#f4e8df', // Couleur de fond de la carte
     wrapTextBackground: '#b4d9d6',

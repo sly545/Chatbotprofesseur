@@ -5,7 +5,7 @@ import Chatbot from "./compoments/Chatbot";
 import Tigrou from "./compoments/Tigrou";
 import Foxy from "./compoments/Foxy";
 import SelectionPerso from './compoments/SelectionCards';
-
+import Menu from './compoments/Menu' // Import du composant Menu 
 
 export default function Home() {
   const [activeChatbot, setActiveChatbot] = useState<string | null>(null);
@@ -26,8 +26,7 @@ export default function Home() {
   };
 
   // Obtention de la couleur actuelle en fonction du chatbot actif
-  const currentColor = activeChatbot && Object.hasOwnProperty.call(chatbotColors, activeChatbot) ? chatbotColors[activeChatbot] : '#666';
-
+  const currentColor = activeChatbot && Object.hasOwnProperty.call(chatbotColors, activeChatbot) ? chatbotColors[activeChatbot as keyof typeof chatbotColors] : '#666';
 
   // Utilisation de React.CSSProperties pour éviter l'erreur TypeScript
   const containerStyle: React.CSSProperties = {
@@ -36,6 +35,7 @@ export default function Home() {
 
   return (
     <div style={containerStyle} className="backButtonContainer">
+      <Menu /> {/* Ajout du composant Menu */}
       {activeChatbot ? (
         <>
           {activeChatbot === 'Foxie' && <Foxy />}

@@ -7,6 +7,13 @@
   margin-top: 25px;
 }
 
+.formusize {
+  width: 90%;
+  margin-bottom: 12px;
+  margin-top: 12px;
+}
+
+
 .conteneurglobal{
   margin: 0;
   background-color: #007bff;
@@ -56,16 +63,14 @@
   }
 
 
+  .fromflex {
+    display: flex;
+    flex-direction: column;
+    height: 650px;
+    justify-content: flex-end;
+    align-items: center;
+  }
 
-.fromflex{
-  display: flex;
-  flex-direction: column;
-  height: 650px;
-  justify-content: flex-end;
-  padding: 10px;
-  
-  
-}
 .messageUser {
   padding: 10px;
   margin: 10px;
@@ -80,17 +85,17 @@
   margin: 10px ;
   border-radius: 10px;
   background-color: #007bff;
-  text-align: right;
+
 }
 .buttonWithIcon {
-  background: none; /* Supprime le fond */
-  border: none; /* Supprime la bordure */
-  padding: 6px 6px 6px 6px;
-  margin: 10px;  
+  background: none;
+  border: none;
+  padding: 6px;
+  margin: 10px;
   cursor: pointer;
   background-color: #add8e6;
   border-radius: 50%;
-  width: 45px; /* Ajoute le curseur pointer */
+  width: 45px;
 }
 
 /* Vous pouvez également ajouter des styles pour l'icône si nécessaire */
@@ -100,6 +105,15 @@
   /* Ajoutez ici d'autres styles si nécessaire */
 }
 
+.buttonWithIcon.recognizing {
+  background-color: #1c5c66; /* Changement de couleur */
+  animation: blink 1s infinite; /* Animation de clignotement */
+}
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
 .inverse{
   display: flex;
   flex-direction: column;
@@ -139,6 +153,25 @@ cursor: pointer;
 background-color: #0056b3; /* Darker shade for hover */
 }
 
+.textarea {
+  margin-bottom: 16px;
+  margin-top: 13px;
+  width: 100%;
+  min-height: 40px;
+  resize: none;
+  overflow: hidden;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+.textarea:focus {
+  border-color: #007bff;
+}
+
 
 /* Animation for new messages */
 @keyframes slideIn {
@@ -152,6 +185,7 @@ to {
 }
 }
 
-.messageUser, .messageBot {
-animation: slideIn 0.3s ease-out;
+.messageUser,
+.messageBot {
+  animation: slideIn 0.3s ease-out;
 }
