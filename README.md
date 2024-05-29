@@ -18,23 +18,25 @@ npm install
 # ou
 yarn install
 Configurer les variables d'environnement :
-Créez un fichier .env à la racine du projet et ajoutez les clés API nécessaires. Voici comment le fichier .env doit être structuré :
+Créez un fichier .env.local à la racine du projet et ajoutez les clés API nécessaires. Voici comment le fichier .env.local doit être structuré :
 
 env
 Copier le code
 NEXT_PUBLIC_ELEVENLABS_API_KEY=your_elevenlabs_api_key
-NEXT_PUBLIC_MISTRAL_API_KEY=your_mistral_api_key
+NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key
 Comment obtenir les clés API :
 Eleven Labs API Key :
 
 Allez sur Eleven Labs et créez un compte.
 Naviguez vers la section des clés API dans votre tableau de bord utilisateur.
-Copiez votre clé API et collez-la dans le fichier .env comme indiqué ci-dessus.
-Mistral API Key :
+Copiez votre clé API et collez-la dans le fichier .env.local comme indiqué ci-dessus.
+Pour des instructions détaillées, vous pouvez consulter ce tutoriel YouTube : Comment obtenir une clé API Eleven Labs.
+OpenAI API Key :
 
-Allez sur Mistral et créez un compte.
-Naviguez vers la section des clés API dans votre tableau de bord utilisateur.
-Copiez votre clé API et collez-la dans le fichier .env comme indiqué ci-dessus.
+Allez sur OpenAI et créez un compte.
+Accédez à votre tableau de bord API pour générer une clé API.
+Copiez votre clé API et collez-la dans le fichier .env.local comme indiqué ci-dessus.
+Pour des instructions détaillées, vous pouvez consulter ce tutoriel YouTube : Comment obtenir une clé API OpenAI.
 Utilisation
 Lancer l'application :
 
@@ -62,3 +64,9 @@ Carrouselle.tsx
 Loader.tsx
 Aide
 Pour toute question ou problème, n'hésitez pas à ouvrir une issue sur le dépôt GitHub.
+
+
+
+
+
+

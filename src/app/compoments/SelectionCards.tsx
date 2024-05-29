@@ -28,7 +28,7 @@ const professeursData = [
     id: 'Tigrou',
     nom: 'Tigrou',
     image: '/images/tigrou1.webp',
-    description: "Professeur d'histoire géo",
+    description: "Professeur d'histoire-géographie",
     cardBackground: '#1c5c66', // Couleur de fond de la carte
     wrapTextBackground: '#4ECDC4',
     hoverShadowColor: '#1c5c66', // Couleur de fond pour la zone de texte

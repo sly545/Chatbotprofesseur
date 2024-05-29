@@ -96,18 +96,33 @@
   border-radius: 50%;
   width: 45px;
 }
-  
+
+.buttonWithIcon:hover {
+  background: none;
+  border: none;
+  padding: 6px;
+  margin: 10px;
+  cursor: pointer;
+  background-color: #f4e8df;
+  transition: 0.5s;
+  border-radius: 50%;
+  width: 45px;
+}
+
   /* Vous pouvez également ajouter des styles pour l'icône si nécessaire */
   .iconStyle {
     color: #007bff; /* La couleur de l'icône, ajustez selon vos besoins */
     font-size: 24px; /* La taille de l'icône */
     /* Ajoutez ici d'autres styles si nécessaire */
   }
-  
+
   .buttonWithIcon.recognizing {
     background-color: #1c5c66; /* Changement de couleur */
     animation: blink 1s infinite; /* Animation de clignotement */
   }
+  
+
+
   @keyframes blink {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
@@ -162,12 +177,12 @@
     border: none;
     color: #007bff; /* Exemple de couleur, ajustez selon votre design */
   }
-  
+
   /* Improved button styling */
   .button {
   padding: 10px;
   width: 100%;
-  background-color: #c4b291  ; /* Example primary color */
+  background-color: #c4b291; /* Example primary color */
   color: white;
   border: none;
   border-radius: 5px;
@@ -175,7 +190,8 @@
   }
   
   .button:hover {
-  background-color: #008B8B ; /* Darker shade for hover */
+  background-color: #008B8B ;
+  transition: 0.5s; /* Darker shade for hover */
   }
   
   .textarea:focus {

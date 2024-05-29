@@ -90,6 +90,17 @@
   border-radius: 50%;
   width: 45px;
 }
+.buttonWithIcon:hover {
+  background: none;
+  border: none;
+  padding: 6px;
+  margin: 10px;
+  cursor: pointer;
+  background-color: #1c5c66;
+  transition: 0.5s;
+  border-radius: 50%;
+  width: 45px;
+}
 
 .iconStyle {
   color: #007bff;
@@ -132,6 +143,7 @@
 
 .button:hover {
   background-color: #006666;
+  transition: 0.5s;
 }
 
 .textarea {

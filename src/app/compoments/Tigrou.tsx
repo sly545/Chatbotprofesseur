@@ -138,46 +138,50 @@ const Chatbot: React.FC = () => {
     }
   };
 
-  const sendMessageToMistral = async (message: string) => {
+  const sendMessageToGPT4 = async (message: string) => {
     if (!message) return;
     setIsLoading(true);
 
     setMessages(prev => [...prev, { content: message, role: 'user' }]);
 
-    const lastTwoMessages = messages.slice(-2);
-    const updatedLapieContext = [
+    const context = [
       {
-        role: "system",
-        content: "tu es Tigrou, un personnage mignon inventé. Tu es un professeur de histoir géo et tu aides les enfants à réviser leur leçon. Tu utiliseras le tutoiement pour parler aux enfants.",
-      },
-      ...lastTwoMessages,
+        "role": "system",
+        "content": "Tu es Tigrou, un personnage mignon inventé. Tu es un professeur d'histoire-géographie et tu aides les enfants à réviser leurs leçons. Tu utiliseras le tutoiement pour parler aux enfants."
+    },
+    {
+        "role": "system",
+        "content": "Une fois que tu t'es présenté, demande l'âge et le prenom de l'enfant et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
+    },
+
+      ...messages.slice(-5),
       { role: "user", content: message }
+    
     ];
 
     try {
       const response = await axios.post(
-        'https://api.mistral.ai/v1/chat/completions',
+        'https://api.openai.com/v1/chat/completions',
         {
-          model: "mistral-small",
-          messages: updatedLapieContext,
-          safe_prompt: false,
-          temperature: 0.5,
-          top_p: 1,
-          max_tokens: 5120,
-          stream: false,
-          random_seed: 1337
+          model: "gpt-4o",
+          messages: context,
+          max_tokens: 1500,
+          n: 1,
+          stop: null,
+          temperature: 0.7,
         },
         {
           headers: {
-            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_MISTRAL_API_KEY}`
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
           }
         }
       );
 
-      const lapieResponse = response.data.choices[0].message.content;
-      setMessages(prev => [...prev, { content: lapieResponse, role: 'assistant' }]);
+      const gptResponse = response.data.choices[0].message.content;
+      setMessages(prev => [...prev, { content: gptResponse, role: 'assistant' }]);
     } catch (error) {
-      console.error('Error sending message to Mistral:', error);
+      console.error('Error sending message to GPT-4:', error);
     } finally {
       setIsLoading(false);
     }
@@ -185,7 +189,7 @@ const Chatbot: React.FC = () => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    sendMessageToMistral(userMessage);
+    sendMessageToGPT4(userMessage);
     setUserMessage('');
   };
 
