@@ -4,7 +4,7 @@ import styles from '../compoments/Chatbot.module.css';
 import Carrouselle from './carrouselle';
 import Loader from '../compoments/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faMicrophone, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 interface IMessage {
   content: string;
@@ -19,7 +19,11 @@ declare global {
   }
 }
 
-const Chatbot: React.FC = () => {
+interface ChatbotProps {
+  onBack: () => void;
+}
+
+const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
   const [userMessage, setUserMessage] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,12 +70,18 @@ const Chatbot: React.FC = () => {
   }, [userMessage]);
 
   const startVoiceRecognition = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.start();
-      setIsRecognizing(true);
-      playSound('start-sound.mp3');
+    if (isRecognizing) {
+      recognitionRef.current?.stop();
+      setIsRecognizing(false);
+      playSound('stop-sound.mp3');
     } else {
-      alert("Votre navigateur ne supporte pas la reconnaissance vocale.");
+      if (recognitionRef.current) {
+        recognitionRef.current.start();
+        setIsRecognizing(true);
+        playSound('start-sound.mp3');
+      } else {
+        alert("Votre navigateur ne supporte pas la reconnaissance vocale.");
+      }
     }
   };
 
@@ -109,12 +119,13 @@ const Chatbot: React.FC = () => {
             "similarity_boost": 1,
             "stability": 1,
             "style": 0,
-            "use_speaker_boost": true
+            "use_speaker_boost": true,
+            "optimize_streaming_latency": 2,
           }
         })
       };
 
-      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/KmqhNPEmmOndTBOPk4mJ?output_format=mp3_22050_32', options);
+      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/15QsI5RGrPSfyuU4tnvX?output_format=mp3_22050_32', options);
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
 
@@ -147,7 +158,7 @@ const Chatbot: React.FC = () => {
     const context = [
       {
         "role": "system",
-        "content": "tu es Lapie, un personnage mignon inventé. Tu es un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
+        "content": "tu es Lapie,. Tu es un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
     },
     {
       "role": "system",
@@ -204,8 +215,7 @@ const Chatbot: React.FC = () => {
     { src: '/images/ecuation.webp', alt: 'Image 3' },
     { src: '/images/nombrepremier.webp', alt: 'Image 4' },
     { src: '/images/lasimetrie.webp', alt: 'Image 5' },
-    
-];
+  ];
 
   return (
     <div className={styles.chatbotwrap}>
@@ -240,12 +250,21 @@ const Chatbot: React.FC = () => {
               className={styles.textarea}
             />
             <button type="submit" className={styles.button}>Envoyer</button>
+            <div className={styles.espacmentbutton}>
             <button
               type="button"
               onClick={startVoiceRecognition}
               className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}>
               <FontAwesomeIcon icon={faMicrophone} className={styles.iconStyle} />
             </button>
+            <button
+              type="button"
+              onClick={onBack}
+              className={styles.buttonWithIcon}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className={styles.iconStyle} />
+            </button>
+            </div>
           </form>
         </div>
       </div>

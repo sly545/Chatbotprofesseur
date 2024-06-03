@@ -43,3 +43,28 @@ body {
   border-radius: 5px;
   /* Ajoutez d'autres styles selon vos besoins */
 }
+/* Chatbot.module.css */
+@media (max-width: 600px) {
+  .sizecarou {
+      display: none;
+  }
+  .backButton{
+
+    display: none;
+  }
+}
+
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 900ms;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 900ms;
+}

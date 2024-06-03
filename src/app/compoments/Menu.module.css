@@ -19,7 +19,7 @@
     left: -250px;
     width: 250px;
     height: 100%;
-    background-color: #1c5c66;
+    background-color: #02b2d6;
     transition: left 0.3s ease;
     z-index: 999;
   }

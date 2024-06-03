@@ -5,17 +5,28 @@ import Chatbot from "./compoments/Chatbot";
 import Tigrou from "./compoments/Tigrou";
 import Foxy from "./compoments/Foxy";
 import SelectionPerso from './compoments/SelectionCards';
-import Menu from './compoments/Menu' // Import du composant Menu 
+import Menu from './compoments/Menu'; // Import du composant Menu 
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import styles from './compoments/selecti.module.css'; // Import du CSS
 
 export default function Home() {
   const [activeChatbot, setActiveChatbot] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleSelect = (id: string) => {
-    setActiveChatbot(id);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveChatbot(id);
+      setIsTransitioning(false);
+    }, 300); // Ajustez le délai pour correspondre à la durée de votre transition
   };
 
   const handleBack = () => {
-    setActiveChatbot(null);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveChatbot(null);
+      setIsTransitioning(false);
+    }, 300); // Ajustez le délai pour correspondre à la durée de votre transition
   };
 
   // Définition d'un objet de couleurs par chatbot
@@ -36,16 +47,25 @@ export default function Home() {
   return (
     <div style={containerStyle} className="backButtonContainer">
       <Menu /> {/* Ajout du composant Menu */}
-      {activeChatbot ? (
-        <>
-          {activeChatbot === 'Foxie' && <Foxy />}
-          {activeChatbot === 'Tigrou' && <Tigrou />}
-          {activeChatbot === 'Chatbot' && <Chatbot />}
-          <button onClick={handleBack} className="backButton">Retour</button>
-        </>
-      ) : (
-        <SelectionPerso onSelect={handleSelect} />
-      )}
+      <TransitionGroup>
+        {activeChatbot ? (
+          <CSSTransition key={activeChatbot} timeout={900} classNames="fade">
+            <div className={`${styles.chatbotwrap} ${isTransitioning ? styles.hidden : ''}`}>
+              {activeChatbot === 'Foxie' && <Foxy onBack={handleBack} activeChatbot={activeChatbot} />}
+              {activeChatbot === 'Tigrou' && <Tigrou onBack={handleBack} activeChatbot={activeChatbot} />}
+              {activeChatbot === 'Chatbot' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
+              <button onClick={handleBack} className="backButton">Retour</button>
+            </div>
+          </CSSTransition>
+        ) : (
+          <CSSTransition key="selection" timeout={900} classNames="fade">
+            <div className={`${styles.container} ${isTransitioning ? styles.hidden : ''}`}>
+              <SelectionPerso onSelect={handleSelect} />
+            </div>
+          </CSSTransition>
+        )}
+      </TransitionGroup>
     </div>
   );
 }
+

@@ -24,6 +24,9 @@
   box-shadow: 0 4px 11px 0px #1c5c66;
 }
 
+.hidden {
+  display: none;
+}
 .sizecarou {
   width: 70%;
   height: 650px;
@@ -62,7 +65,7 @@
   flex-direction: column;
   height: 650px;
   justify-content: flex-end;
-  align-items: center;
+  align-items: stretch;
 }
 
 .messageUser {
@@ -130,7 +133,11 @@
   width: calc(100% - 22px);
   margin-bottom: 15px;
 }
-
+.espacmentbutton{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+}
 .button {
   padding: 10px;
   width: 100%;
@@ -180,4 +187,30 @@
 .messageUser,
 .messageBot {
   animation: slideIn 0.3s ease-out;
+}
+
+@media (max-width: 600px) {
+  .sizecarou {
+      display: none;
+  }
+  .chatbotwrap{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 0;
+    margin-top: 25px;
+  }
+  .conteneurglobal{
+    margin-top: 25px;
+  
+  }
+  .container {
+
+    max-height: 479px;
+
+   
+  }
+
+
 }

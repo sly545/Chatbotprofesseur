@@ -4,7 +4,7 @@ import styles from '../compoments/Tigrou.module.css';
 import Carrouselle from './carrouselle';
 import Loader from '../compoments/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faMicrophone, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 interface IMessage {
   content: string;
@@ -19,7 +19,11 @@ declare global {
   }
 }
 
-const Chatbot: React.FC = () => {
+interface ChatbotProps {
+  onBack: () => void;
+}
+
+const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
   const [userMessage, setUserMessage] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,12 +70,18 @@ const Chatbot: React.FC = () => {
   }, [userMessage]);
 
   const startVoiceRecognition = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.start();
-      setIsRecognizing(true);
-      playSound('start-sound.mp3');
+    if (isRecognizing) {
+      recognitionRef.current?.stop();
+      setIsRecognizing(false);
+      playSound('stop-sound.mp3');
     } else {
-      alert("Votre navigateur ne supporte pas la reconnaissance vocale.");
+      if (recognitionRef.current) {
+        recognitionRef.current.start();
+        setIsRecognizing(true);
+        playSound('start-sound.mp3');
+      } else {
+        alert("Votre navigateur ne supporte pas la reconnaissance vocale.");
+      }
     }
   };
 
@@ -109,12 +119,13 @@ const Chatbot: React.FC = () => {
             "similarity_boost": 1,
             "stability": 1,
             "style": 0,
-            "use_speaker_boost": true
+            "use_speaker_boost": true,
+            "optimize_streaming_latency": 2,
           }
         })
       };
 
-      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/KmqhNPEmmOndTBOPk4mJ?output_format=mp3_22050_32', options);
+      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/15QsI5RGrPSfyuU4tnvX?output_format=mp3_22050_32', options);
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
 
@@ -138,61 +149,97 @@ const Chatbot: React.FC = () => {
     }
   };
 
-  const sendMessageToGPT4 = async (message: string) => {
+
+  const sendMessageToMistral = async (message: string) => {
     if (!message) return;
     setIsLoading(true);
-
-    setMessages(prev => [...prev, { content: message, role: 'user' }]);
-
-    const context = [
+  
+    let updatedLapieContext = [
       {
-        "role": "system",
-        "content": "Tu es Tigrou, un personnage mignon inventé. Tu es un professeur d'histoire-géographie et tu aides les enfants à réviser leurs leçons. Tu utiliseras le tutoiement pour parler aux enfants."
-    },
-    {
-        "role": "system",
-        "content": "Une fois que tu t'es présenté, demande l'âge et le prenom de l'enfant et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
-    },
+        role: 'system',
+        content: 'Tu es Tigrou, un professeur d\'histoire-géographie qui aide les enfants à réviser leur leçon. Tu utiliseras le tutoiement pour parler aux enfants.'
+      },
+      {
+        role: 'system',
+        content: "Une fois que tu t'es présenté, demande l'âge de l'enfant son prénom et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
+      },
+      {
+        role: 'system',
+        content: "si l'enfant change de sujet d'aprentissage ne lui redemende pas son age et son nom car tu le conais deja!"
+      },
+  
 
-      ...messages.slice(-5),
-      { role: "user", content: message }
     
     ];
-
+  
+    // Vérifiez si Tigrou s'est déjà présenté
+    if (messages.length === 0) {
+      updatedLapieContext = [
+        {
+          role: 'system',
+          content: "Bonjour, je suis Tigrou, ton professeur d'histoire-géographie. Pour mieux t'aider, peux-tu me dire ton prénom et ton âge ?"
+        },
+        ...updatedLapieContext
+      ];
+    }
+  
+    // Ajoute le message de l'utilisateur aux messages
+    setMessages(prev => [...prev, { role: 'user', content: message }]);
+  
+    // Prépare le contexte pour l'API avec les deux derniers messages textuels
+    const textMessages = messages.filter(msg => typeof msg.content === 'string');
+    const lastTwoMessages = textMessages.slice(-5);
+    updatedLapieContext = [
+      ...updatedLapieContext,
+      ...lastTwoMessages,
+      { role: "user", content: message }
+    ];
+  
     try {
       const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
+        'https://api.mistral.ai/v1/chat/completions',
         {
-          model: "gpt-4o",
-          messages: context,
-          max_tokens: 1500,
-          n: 1,
-          stop: null,
-          temperature: 0.7,
+          model: "mistral-small",
+          messages: updatedLapieContext.map(msg => ({ role: msg.role, content: msg.content })),
+          safe_prompt: false,
+          temperature: 0.5,
+          top_p: 1,
+          max_tokens: 5120,
+          stream: false,
+          random_seed: 1337,
         },
         {
           headers: {
-            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-            'Content-Type': 'application/json'
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_MISTRAL_API_KEY}`
           }
         }
       );
-
-      const gptResponse = response.data.choices[0].message.content;
-      setMessages(prev => [...prev, { content: gptResponse, role: 'assistant' }]);
+  
+      const lapieResponse = response.data.choices[0].message.content;
+  
+      // Supprimez la phrase contenant le mot "Tigrou" à partir de la réponse de Tigrou
+      let filteredResponse = lapieResponse;
+      if (messages.length > 1) {
+        filteredResponse = lapieResponse.replace(/^.*?Tigrou.*?\.\s*/i, '');
+      }
+  
+      setMessages(prev => [...prev, { role: 'assistant', content: filteredResponse }]);
+  
+      console.log("Contexte actuel pour l'API :", updatedLapieContext);
     } catch (error) {
-      console.error('Error sending message to GPT-4:', error);
+      console.error('Error sending message to Mistral:', error);
     } finally {
       setIsLoading(false);
     }
   };
-
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  
+  
+const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sendMessageToGPT4(userMessage);
+    sendMessageToMistral(userMessage);
     setUserMessage('');
   };
-
+ 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -202,9 +249,9 @@ const Chatbot: React.FC = () => {
 
   const images = [
     { src: '/images/tigrou1.webp', alt: 'Image 1' },
-    { src: '/images/danton-revolution.webp', alt: 'Image 2' },
-    { src: '/images/premierroidefrance.webp', alt: 'Image 3' },
-    { src: '/images/apeldu18.webp', alt: 'Image 4' },
+    { src: '/images/premierroidefrance.webp', alt: 'Image 2' },
+    { src: '/images/apeldu18.webp', alt: 'Image 2' },
+   
   ];
 
   return (
@@ -240,12 +287,21 @@ const Chatbot: React.FC = () => {
               className={styles.textarea}
             />
             <button type="submit" className={styles.button}>Envoyer</button>
+            <div className={styles.espacmentbutton}>
             <button
               type="button"
               onClick={startVoiceRecognition}
               className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}>
               <FontAwesomeIcon icon={faMicrophone} className={styles.iconStyle} />
             </button>
+            <button
+              type="button"
+              onClick={onBack}
+              className={styles.buttonWithIcon}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className={styles.iconStyle} />
+            </button>
+            </div>
           </form>
         </div>
       </div>

@@ -1,7 +1,23 @@
 .container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+@media (max-width: 600px){
+  .container {
+    width: 100%;
+    margin-top: 25px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-    padding: 20px;
+    padding: 0px;
   }
+
+}

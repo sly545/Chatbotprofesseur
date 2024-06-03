@@ -6,6 +6,9 @@
     margin-left: 10%;
     margin-top: 25px;
   }
+  .hidden {
+    display: none;
+  }
   .formusize{
     width: 90%;
     margin-bottom: 12px;
@@ -66,7 +69,8 @@
     flex-direction: column;
     height: 650px;
     justify-content: flex-end;
-    align-items: center;
+    align-items: stretch;
+
     
     
   }
@@ -139,7 +143,11 @@
     width: calc(100% - 22px);
     margin-bottom: 15px;
   }
-  
+  .espacmentbutton{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-around;
+  }
   .button {
     padding: 10px;
     width: 100%;
@@ -212,4 +220,29 @@
   .messageUser,
   .messageBot {
     animation: slideIn 0.3s ease-out;
+  }
+  @media (max-width: 600px) {
+    .sizecarou {
+        display: none;
+    }
+    .chatbotwrap{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 0;
+      margin-top: 25px;
+    }
+    .conteneurglobal{
+      margin-top: 25px;
+    
+    }
+    .container {
+  
+      max-height: 479px;
+  
+     
+    }
+  
+  
   }
