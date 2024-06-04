@@ -106,7 +106,7 @@
 }
 
 .iconStyle {
-  color: #007bff;
+  color: #008b8b;
   font-size: 24px;
 }
 
@@ -212,5 +212,18 @@
    
   }
 
+
+}
+.backButton {
+  position: relative;
+  left: 76%;
+  bottom: 63px;
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  background-color:  #008b8b; 
+  border-radius: 5px;
+  display: flex;
 
 }

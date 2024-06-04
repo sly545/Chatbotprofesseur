@@ -237,3 +237,17 @@ to {
 
 
 }
+/* styles/global.css */
+.backButton {
+  position: relative;
+  left: 76%;
+  bottom: 63px;
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  background-color:  #007bff; /* Utilisez une variable CSS avec une valeur par défaut */
+  border-radius: 5px;
+  display: flex;
+
+}

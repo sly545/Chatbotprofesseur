@@ -221,7 +221,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
     <div className={styles.chatbotwrap}>
       <div className={styles.conteneurglobal}>
         <div className={styles.sizecarou}>
-          <Carrouselle images={images} />
+           <Carrouselle images={images}  />
+          <button onClick={onBack} className={styles.backButton}>Retour</button>
         </div>
         <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
           {messages.map((msg, index) => (

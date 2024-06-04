@@ -54,7 +54,6 @@ export default function Home() {
               {activeChatbot === 'Foxie' && <Foxy onBack={handleBack} activeChatbot={activeChatbot} />}
               {activeChatbot === 'Tigrou' && <Tigrou onBack={handleBack} activeChatbot={activeChatbot} />}
               {activeChatbot === 'Chatbot' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
-              <button onClick={handleBack} className="backButton">Retour</button>
             </div>
           </CSSTransition>
         ) : (

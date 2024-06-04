@@ -30,19 +30,7 @@ body {
   display: block;
   border-radius: 0px 15px 15px 0px
 }
-/* styles/global.css */
-.backButton {
-  position: absolute;
-  left: 78%;
-  bottom: 38px;
-  padding: 10px 20px;
-  border: none;
-  color: white;
-  cursor: pointer;
-  background-color: var(--back-button-color, #fe5d5d); /* Utilisez une variable CSS avec une valeur par défaut */
-  border-radius: 5px;
-  /* Ajoutez d'autres styles selon vos besoins */
-}
+
 /* Chatbot.module.css */
 @media (max-width: 600px) {
   .sizecarou {

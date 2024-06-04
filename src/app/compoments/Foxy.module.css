@@ -115,7 +115,7 @@
 
   /* Vous pouvez également ajouter des styles pour l'icône si nécessaire */
   .iconStyle {
-    color: #007bff; /* La couleur de l'icône, ajustez selon vos besoins */
+    color: #006666; /* La couleur de l'icône, ajustez selon vos besoins */
     font-size: 24px; /* La taille de l'icône */
     /* Ajoutez ici d'autres styles si nécessaire */
   }
@@ -246,3 +246,17 @@
   
   
   }
+  .backButton {
+    position: relative;
+    left: 76%;
+    bottom: 63px;
+    padding: 10px 20px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    background-color:   #c4b291;
+    border-radius: 5px;
+    display: flex;
+  
+  }
+  
