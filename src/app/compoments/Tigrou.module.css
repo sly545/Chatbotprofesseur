@@ -103,6 +103,7 @@
   transition: 0.5s;
   border-radius: 50%;
   width: 45px;
+  user-select: none;
 }
 
 .iconStyle {
@@ -146,6 +147,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  user-select: none;
 }
 
 .button:hover {

@@ -24,11 +24,13 @@
   }
   .card h3 {
     margin: 12px 0;
+    user-select: none
   }
   
   .card p {
     font-size: 14px;
     color: #666;
+    user-select: none;
   }
   .wraptext{
     display: flex;

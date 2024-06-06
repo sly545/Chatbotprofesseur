@@ -156,9 +156,13 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    user-select: none;
   }
   .button:hover {
     background-color: #006666;
+  }
+  .button:focus {
+    outline: none;
   }
   .textarea {
     margin-bottom: 16px;

@@ -36,6 +36,7 @@
     flex-direction: column;
     justify-content: center;
     height: 100%;
+    user-select: none
   }
   
   .menu ul li {

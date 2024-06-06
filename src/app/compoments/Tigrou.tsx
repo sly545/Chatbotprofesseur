@@ -21,6 +21,7 @@ declare global {
 
 interface ChatbotProps {
   onBack: () => void;
+  activeChatbot: string | null;
 }
 
 const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
@@ -125,7 +126,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
         })
       };
 
-      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/15QsI5RGrPSfyuU4tnvX?output_format=mp3_22050_32', options);
+      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/j9RedbMRSNQ74PyikQwD?output_format=mp3_22050_32', options);
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
 
@@ -250,7 +251,8 @@ const handleFormSubmit = (e: React.FormEvent) => {
   const images = [
     { src: '/images/tigrou1.webp', alt: 'Image 1' },
     { src: '/images/premierroidefrance.webp', alt: 'Image 2' },
-    { src: '/images/apeldu18.webp', alt: 'Image 2' },
+    { src: '/images/apeldu18.webp', alt: 'Image 3' },
+    { src: '/images/danton-revolution.webp', alt: 'Image 4' },
    
   ];
 
