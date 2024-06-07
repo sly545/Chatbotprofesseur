@@ -213,17 +213,53 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
   };
 
   const handleImageCapture = async (dataUrl: string) => {
+    if (!dataUrl) return;
+    setIsLoading(true);
+  
+    const context = [
+      {
+        "role": "system",
+        "content": "tu recois les devoir ou une photo de l'enfant et si cette un devoir tu l'aidera a comprendre sens lui donner la reponse . si c'est une photo fais lui un compliment sur ces vetements !"
+      },
+
+      ...messages.slice(-5),
+      {
+        role: 'user',
+        content: [
+   
+          {
+            type: 'image_url',
+            image_url: {
+              url: dataUrl
+            }
+          }
+        ]
+      }
+    ];
+  
     try {
-      const response = await axios.post('/api/analyze-image', {
-        image: dataUrl
-      });
+      console.log('Sending context to API:', JSON.stringify(context, null, 2));
+      
+      const response = await axios.post(
+        '/api/analyze-image',
+        { messages: context },
+        {
+          headers: {
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+  
       const analysisResult = response.data.choices[0].message.content;
-      setMessages((prev) => [...prev, { content: analysisResult, role: 'assistant' }]);
+      setMessages(prev => [...prev, { content: analysisResult, role: 'assistant' }]);
     } catch (error) {
       console.error('Error analyzing image:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
-   
+  
   
   const images = [
     { src: '/images/lapie1.webp', alt: 'Image 1' },
