@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../compoments/Chatbot.module.css';
-import Carrouselle from './carrouselle';
+import Carrouselle from '../compoments/carrouselle';
 import Loader from '../compoments/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeUp, faMicrophone, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import CameraCapture from'../compoments/CameraCapture';
+
 
 interface IMessage {
   content: string;
@@ -160,12 +162,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
       {
         "role": "system",
         "content": "tu es Lapie,. Tu es un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
-    },
-    {
-      "role": "system",
-      "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant son prenon et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
-    },
-     ...messages.slice(-5),
+      },
+      {
+        "role": "system",
+        "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant son prénom et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
+      },
+      ...messages.slice(-5),
       { role: "user", content: message }
     ];
 
@@ -210,6 +212,19 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
     }
   };
 
+  const handleImageCapture = async (dataUrl: string) => {
+    try {
+      const response = await axios.post('/api/analyze-image', {
+        image: dataUrl
+      });
+      const analysisResult = response.data.choices[0].message.content;
+      setMessages((prev) => [...prev, { content: analysisResult, role: 'assistant' }]);
+    } catch (error) {
+      console.error('Error analyzing image:', error);
+    }
+  };
+   
+  
   const images = [
     { src: '/images/lapie1.webp', alt: 'Image 1' },
     { src: '/images/fracavecs.webp', alt: 'Image 2' },
@@ -222,7 +237,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
     <div className={styles.chatbotwrap}>
       <div className={styles.conteneurglobal}>
         <div className={styles.sizecarou}>
-           <Carrouselle images={images}  />
+          <Carrouselle images={images} />
           <button onClick={onBack} className={styles.backButton}>Retour</button>
         </div>
         <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
@@ -253,25 +268,28 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
             />
             <button type="submit" className={styles.button}>Envoyer</button>
             <div className={styles.espacmentbutton}>
-            <button
-              type="button"
-              onClick={startVoiceRecognition}
-              className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}>
-              <FontAwesomeIcon icon={faMicrophone} className={styles.iconStyle} />
-            </button>
-            <button
-              type="button"
-              onClick={onBack}
-              className={styles.buttonWithIcon}
-            >
-              <FontAwesomeIcon icon={faArrowLeft} className={styles.iconStyle} />
-            </button>
+              <button
+                type="button"
+                onClick={startVoiceRecognition}
+                className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}
+              >
+                <FontAwesomeIcon icon={faMicrophone} className={styles.iconStyle} />
+              </button>
+              <button
+                type="button"
+                onClick={onBack}
+                className={styles.buttonWithIcon}
+              >
+                <FontAwesomeIcon icon={faArrowLeft} className={styles.iconStyle} />
+              </button>
             </div>
           </form>
+          <CameraCapture onCapture={handleImageCapture} />
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default Chatbot;
