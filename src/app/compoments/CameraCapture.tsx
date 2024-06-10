@@ -1,45 +1,94 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
-const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void }> = ({ onCapture }) => {
+interface CameraCaptureProps {
+  onCapture: (dataUrl: string) => void;
+}
+
+const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isCapturing, setIsCapturing] = useState(false);
+  const [isCameraOn, setIsCameraOn] = useState(false);
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
 
-  const startCapture = async () => {
-    setIsCapturing(true);
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-      videoRef.current.play();
+  useEffect(() => {
+    const getDevices = async () => {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      setDevices(devices.filter(device => device.kind === 'videoinput'));
+    };
+    getDevices();
+  }, []);
+
+  const startCamera = async () => {
+    let stream: MediaStream | null = null;
+    try {
+      const nativeCamera = devices.find(device => device.label.includes('HP Wide Vision HD Camera'));
+      if (nativeCamera) {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { deviceId: nativeCamera.deviceId } 
+        });
+      } else if (devices.length > 0) {
+        // Use the first available camera if the native camera is not found
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { deviceId: devices[0].deviceId } 
+        });
+      } else {
+        alert('No camera found. Please check your camera connections.');
+        return;
+      }
+
+      if (videoRef.current && stream) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+        streamRef.current = stream;
+        setIsCameraOn(true);
+      }
+    } catch (error) {
+      console.error('Error accessing the camera:', error);
+      alert('Error accessing the camera. Please check your camera permissions.');
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+      setIsCameraOn(false);
     }
   };
 
   const captureImage = () => {
-    if (canvasRef.current && videoRef.current) {
-      const context = canvasRef.current.getContext('2d');
+    if (videoRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const context = canvas.getContext('2d');
       if (context) {
-        context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-        const dataUrl = canvasRef.current.toDataURL('image/png');
+        context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/png');
         onCapture(dataUrl);
       }
     }
-    stopCapture();
   };
 
-  const stopCapture = () => {
-    setIsCapturing(false);
-    if (videoRef.current && videoRef.current.srcObject) {
-      const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach(track => track.stop());
-    }
-  };
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
 
   return (
     <div>
-      <button onClick={startCapture}>Start Camera</button>
-      <button onClick={captureImage} disabled={!isCapturing}>Capture</button>
-      {isCapturing && <video ref={videoRef} width="300" height="200" />}
-      <canvas ref={canvasRef} width="300" height="200" style={{ display: 'none' }} />
+      <div>
+        <button onClick={startCamera} disabled={isCameraOn}>Start Camera</button>
+        <button onClick={stopCamera} disabled={!isCameraOn}>Stop Camera</button>
+      </div>
+      <div>
+        <video ref={videoRef} style={{ display: isCameraOn ? 'block' : 'none', width: '100%' }} />
+        {isCameraOn && <button onClick={captureImage}>Capture Image</button>}
+      </div>
     </div>
   );
 };

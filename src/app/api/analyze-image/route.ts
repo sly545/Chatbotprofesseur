@@ -14,14 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const messages = [
-      {
-        role: "system",
-        content: "tu es Lapie, un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
-      },
-      {
-        role: "system",
-        content: "Une fois que tu t'es présenté, demande l'âge de l'enfant son prénom et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
-      },
+
       ...body.messages
     ];
 

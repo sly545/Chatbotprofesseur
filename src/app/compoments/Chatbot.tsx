@@ -216,17 +216,26 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
     if (!dataUrl) return;
     setIsLoading(true);
   
+    // Ajouter l'image aux messages pour l'afficher dans la discussion
+    setMessages(prev => [...prev, { content: 'Image envoyée', role: 'user', imageUrl: dataUrl }]);
+  
     const context = [
       {
         "role": "system",
-        "content": "tu recois les devoir ou une photo de l'enfant et si cette un devoir tu l'aidera a comprendre sens lui donner la reponse . si c'est une photo fais lui un compliment sur ces vetements !"
+        "content": "tu es Lapie, un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
       },
-
+      {
+        "role": "system",
+        "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant son prénom et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
+      },
       ...messages.slice(-5),
       {
         role: 'user',
         content: [
-   
+          {
+            type: 'text',
+            text: 'Analyse cette image : tu es Lapie, un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants. Si on t\'envoie une photo, tu feras un compliment par exemple "tu as de très belles lunettes".'
+          },
           {
             type: 'image_url',
             image_url: {
@@ -271,59 +280,60 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
 
   return (
     <div className={styles.chatbotwrap}>
-      <div className={styles.conteneurglobal}>
-        <div className={styles.sizecarou}>
-          <Carrouselle images={images} />
-          <button onClick={onBack} className={styles.backButton}>Retour</button>
-        </div>
-        <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
-          {messages.map((msg, index) => (
-            <div key={index} className={msg.role === 'user' ? styles.messageUser : styles.messageBot}>
-              {msg.content.split('\n').map((line, i) => (
-                <React.Fragment key={i}>
-                  {line}
-                  <br />
-                </React.Fragment>
-              ))}
-              {msg.role === 'assistant' && (
-                <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon}>
-                  <FontAwesomeIcon icon={faVolumeUp} className={styles.iconStyle} />
-                </button>
-              )}
-            </div>
-          ))}
-          {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
-          <form className={styles.fromflex} onSubmit={handleFormSubmit}>
-            <textarea
-              ref={textareaRef}
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Écrivez votre message ici"
-              className={styles.textarea}
-            />
-            <button type="submit" className={styles.button}>Envoyer</button>
-            <div className={styles.espacmentbutton}>
-              <button
-                type="button"
-                onClick={startVoiceRecognition}
-                className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}
-              >
-                <FontAwesomeIcon icon={faMicrophone} className={styles.iconStyle} />
+    <div className={styles.conteneurglobal}>
+      <div className={styles.sizecarou}>
+        <Carrouselle images={images} />
+        <button onClick={onBack} className={styles.backButton}>Retour</button>
+      </div>
+      <div className={`${styles.container} ${isLoading ? styles.translucent : ''}`}>
+        {messages.map((msg, index) => (
+          <div key={index} className={msg.role === 'user' ? styles.messageUser : styles.messageBot}>
+            {msg.content.split('\n').map((line, i) => (
+              <React.Fragment key={i}>
+                {line}
+                <br />
+              </React.Fragment>
+            ))}
+            {msg.imageUrl && <img src={msg.imageUrl} alt="Envoyé" className={styles.sentImage} />}
+            {msg.role === 'assistant' && (
+              <button onClick={() => fetchAudioFromElevenLabs(msg.content, index)} className={styles.buttonWithIcon}>
+                <FontAwesomeIcon icon={faVolumeUp} className={styles.iconStyle} />
               </button>
-              <button
-                type="button"
-                onClick={onBack}
-                className={styles.buttonWithIcon}
-              >
-                <FontAwesomeIcon icon={faArrowLeft} className={styles.iconStyle} />
-              </button>
-            </div>
-          </form>
-          <CameraCapture onCapture={handleImageCapture} />
-        </div>
+            )}
+          </div>
+        ))}
+        {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
+        <form className={styles.fromflex} onSubmit={handleFormSubmit}>
+          <textarea
+            ref={textareaRef}
+            value={userMessage}
+            onChange={(e) => setUserMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Écrivez votre message ici"
+            className={styles.textarea}
+          />
+          <button type="submit" className={styles.button}>Envoyer</button>
+          <div className={styles.espacmentbutton}>
+            <button
+              type="button"
+              onClick={startVoiceRecognition}
+              className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}
+            >
+              <FontAwesomeIcon icon={faMicrophone} className={styles.iconStyle} />
+            </button>
+            <button
+              type="button"
+              onClick={onBack}
+              className={styles.buttonWithIcon}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className={styles.iconStyle} />
+            </button>
+          </div>
+        </form>
+        <CameraCapture onCapture={handleImageCapture} />
       </div>
     </div>
+  </div>
   );
   
 };
