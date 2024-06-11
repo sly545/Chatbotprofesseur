@@ -170,6 +170,7 @@
  border-radius: 5px;
  cursor: pointer;
  user-select: none;
+ margin: 0;
 }
 
 .button:hover {
@@ -241,6 +242,11 @@ to {
 
 
 }
+
+.previewContainer{
+  width: 100%;
+  border-radius: 55px;
+}
 /* styles/global.css */
 .backButton {
   position: relative;
@@ -254,4 +260,9 @@ to {
   border-radius: 5px;
   display: flex;
 
+}
+
+.backButton:hover{
+  background-color: #32c3cd;
+  transition: 0.5s;
 }

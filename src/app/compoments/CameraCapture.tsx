@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import styles from '../compoments/Chatbot.module.css';
 
 interface CameraCaptureProps {
   onCapture: (dataUrl: string) => void;
@@ -80,14 +81,14 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
   }, []);
 
   return (
-    <div>
-      <div>
-        <button onClick={startCamera} disabled={isCameraOn}>Start Camera</button>
-        <button onClick={stopCamera} disabled={!isCameraOn}>Stop Camera</button>
+    <div className={styles.cameraContainer}>
+      <div className={styles.buttonGroup}>
+        {!isCameraOn && <button onClick={startCamera} className={`${styles.button}`}>Envois moi ton devoir</button>}
+        {isCameraOn && <button onClick={stopCamera} className={`${styles.button} `}>Stop Camera</button>}
       </div>
       <div>
-        <video ref={videoRef} style={{ display: isCameraOn ? 'block' : 'none', width: '100%' }} />
-        {isCameraOn && <button onClick={captureImage}>Capture Image</button>}
+        <video ref={videoRef} style={{ display: isCameraOn ? 'block' : 'none', width: '100%',marginBottom:'12px',marginTop:'12px',borderRadius:'5px' }} />
+        {isCameraOn && <button onClick={captureImage} className={`${styles.button} `}>Capture Image</button>} 
       </div>
     </div>
   );

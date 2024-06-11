@@ -13,10 +13,7 @@ export async function POST(request: NextRequest) {
       throw new Error('API Key is missing');
     }
 
-    const messages = [
-
-      ...body.messages
-    ];
+    const messages = [...body.messages];
 
     console.log('Received messages:', JSON.stringify(messages, null, 2));
 

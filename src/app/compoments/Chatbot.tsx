@@ -4,20 +4,21 @@ import styles from '../compoments/Chatbot.module.css';
 import Carrouselle from '../compoments/carrouselle';
 import Loader from '../compoments/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faMicrophone, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import CameraCapture from'../compoments/CameraCapture';
-
+import { faVolumeUp, faMicrophone, faArrowLeft, faCamera } from '@fortawesome/free-solid-svg-icons';
+import CameraCapture from '../compoments/CameraCapture';
 
 interface IMessage {
   content: string;
   audioUrl?: string;
   role: 'user' | 'assistant';
+  imageUrl?: string; // Ajout de la propriété imageUrl
 }
 
 declare global {
   interface Window {
     SpeechRecognition: any;
     webkitSpeechRecognition: any;
+    
   }
 }
 
@@ -31,6 +32,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isRecognizing, setIsRecognizing] = useState(false);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const recognitionRef = useRef<any>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -128,7 +130,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
         })
       };
 
-      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/FVQMzxJGPUBtfz1Azdoy?output_format=mp3_22050_32', options);
+      const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/Z8TGMtMMeHhNttX8jPg0?output_format=mp3_22050_32', options);
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
 
@@ -152,103 +154,73 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
     }
   };
 
-  const sendMessageToGPT4 = async (message: string) => {
-    if (!message) return;
-    setIsLoading(true);
-
-    setMessages(prev => [...prev, { content: message, role: 'user' }]);
-
-    const context = [
-      {
-        "role": "system",
-        "content": "tu es Lapie,. Tu es un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
-      },
-      {
-        "role": "system",
-        "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant son prénom et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
-      },
-      ...messages.slice(-5),
-      { role: "user", content: message }
-    ];
-
-    try {
-      const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          model: "gpt-4o",
-          messages: context,
-          max_tokens: 1500,
-          n: 1,
-          stop: null,
-          temperature: 0.7,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      const gptResponse = response.data.choices[0].message.content;
-      setMessages(prev => [...prev, { content: gptResponse, role: 'assistant' }]);
-    } catch (error) {
-      console.error('Error sending message to GPT-4:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    sendMessageToGPT4(userMessage);
-    setUserMessage('');
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleFormSubmit(e as any);
+      handleSendImageWithText();
     }
   };
 
-  const handleImageCapture = async (dataUrl: string) => {
-    if (!dataUrl) return;
+  const handleImageCapture = (dataUrl: string) => {
+    setCapturedImage(dataUrl);
+  };
+
+
+
+
+  const handleSendImageWithText = async () => {
+    if (!userMessage && !capturedImage) return;
     setIsLoading(true);
   
-    // Ajouter l'image aux messages pour l'afficher dans la discussion
-    setMessages(prev => [...prev, { content: 'Image envoyée', role: 'user', imageUrl: dataUrl }]);
+    const userMessageContent: IMessage = { content: userMessage, role: 'user' };
+    if (capturedImage) {
+      userMessageContent.imageUrl = capturedImage;
+    }
+  
+    setMessages(prev => [...prev, userMessageContent]);
   
     const context = [
       {
         "role": "system",
-        "content": "tu es Lapie, un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
+        "content": "tu es Lapie. Tu es un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
       },
       {
         "role": "system",
-        "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant son prénom et ajuste tes explications en fonction de l'âge des enfants. Présente-toi une seule fois !"
+        "content": "tu ne devra pas utiliser d'anglisisme tu enseigne a des enfants francais "
+      },
+      {
+        "role": "system",
+        "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant son prénom et ajuste tes explications en fonction de l'âge des enfants. Si on t'envoie une photo, tu feras un compliment sur ces vetement ou sont visage si il tenvois un exrcice ne lui donne pas la reponse mais aide le a comprendre avec un autre exemple qui est proche et ensuite traville avec lui en le corrigent!."
       },
       ...messages.slice(-5),
       {
         role: 'user',
-        content: [
-          {
-            type: 'text',
-            text: 'Analyse cette image : tu es Lapie, un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants. Si on t\'envoie une photo, tu feras un compliment par exemple "tu as de très belles lunettes".'
-          },
-          {
-            type: 'image_url',
-            image_url: {
-              url: dataUrl
-            }
-          }
-        ]
+        content: capturedImage
+          ? [
+              {
+                type: 'text',
+                text: userMessage
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: capturedImage
+                }
+              }
+            ]
+          : [
+              {
+                type: 'text',
+                text: userMessage
+              }
+            ]
       }
     ];
   
     try {
       console.log('Sending context to API:', JSON.stringify(context, null, 2));
-      
+  
       const response = await axios.post(
         '/api/analyze-image',
         { messages: context },
@@ -266,20 +238,24 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
       console.error('Error analyzing image:', error);
     } finally {
       setIsLoading(false);
+      setCapturedImage(null);
+      setUserMessage('');
     }
   };
   
-  
-  const images = [
-    { src: '/images/lapie1.webp', alt: 'Image 1' },
-    { src: '/images/fracavecs.webp', alt: 'Image 2' },
-    { src: '/images/ecuation.webp', alt: 'Image 3' },
-    { src: '/images/nombrepremier.webp', alt: 'Image 4' },
-    { src: '/images/lasimetrie.webp', alt: 'Image 5' },
-  ];
 
-  return (
-    <div className={styles.chatbotwrap}>
+
+
+const images = [
+  { src: '/images/lapie1.webp', alt: 'Image 1' },
+  { src: '/images/fracavecs.webp', alt: 'Image 2' },
+  { src: '/images/ecuation.webp', alt: 'Image 3' },
+  { src: '/images/nombrepremier.webp', alt: 'Image 4' },
+  { src: '/images/lasimetrie.webp', alt: 'Image 5' },
+];
+
+return (
+  <div className={styles.chatbotwrap}>
     <div className={styles.conteneurglobal}>
       <div className={styles.sizecarou}>
         <Carrouselle images={images} />
@@ -303,7 +279,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
           </div>
         ))}
         {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
-        <form className={styles.fromflex} onSubmit={handleFormSubmit}>
+        <form className={styles.fromflex} >
           <textarea
             ref={textareaRef}
             value={userMessage}
@@ -312,7 +288,13 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
             placeholder="Écrivez votre message ici"
             className={styles.textarea}
           />
-          <button type="submit" className={styles.button}>Envoyer</button>
+          <button
+              type="button"
+              onClick={handleSendImageWithText}
+              className={styles.button}
+            >
+              Envoyer
+            </button>
           <div className={styles.espacmentbutton}>
             <button
               type="button"
@@ -328,16 +310,19 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
             >
               <FontAwesomeIcon icon={faArrowLeft} className={styles.iconStyle} />
             </button>
+           
           </div>
         </form>
+        {capturedImage && (
+          <div>
+            <img src={capturedImage} alt="Prévisualisation" style={{ width: '100%'}} />
+          </div>
+        )}
         <CameraCapture onCapture={handleImageCapture} />
       </div>
     </div>
   </div>
-  );
-  
+);
 };
 
 export default Chatbot;
-
-
