@@ -165,12 +165,13 @@
  padding: 10px;
  width: 100%;
  background-color: #007bff; /* Example primary color */
-  color: white;
+ color: white;
  border: none;
  border-radius: 5px;
  cursor: pointer;
  user-select: none;
- margin: 0;
+ margin-top: 10px;
+ margin-bottom: 10px;
 }
 
 .button:hover {

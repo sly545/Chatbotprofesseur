@@ -3,6 +3,7 @@ import axios from 'axios';
 
 export const config = {
   runtime: 'edge',
+  
 };
 
 export async function POST(request: NextRequest) {

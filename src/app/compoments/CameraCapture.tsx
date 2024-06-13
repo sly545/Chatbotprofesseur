@@ -1,11 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
-import styles from '../compoments/Chatbot.module.css';
 
 interface CameraCaptureProps {
   onCapture: (dataUrl: string) => void;
+  buttonClassName?: string; // Classe pour le style des boutons
+  videoStyle?: React.CSSProperties; // Style pour la vidéo
+  containerStyle?: React.CSSProperties; // Style pour le conteneur de la caméra
 }
 
-const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
+const CameraCapture: React.FC<CameraCaptureProps> = ({
+  onCapture,
+  buttonClassName,
+  videoStyle,
+  containerStyle,
+}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
@@ -81,14 +88,14 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
   }, []);
 
   return (
-    <div className={styles.cameraContainer}>
-      <div className={styles.buttonGroup}>
-        {!isCameraOn && <button onClick={startCamera} className={`${styles.button}`}>Envois moi ton devoir</button>}
-        {isCameraOn && <button onClick={stopCamera} className={`${styles.button} `}>Stop Camera</button>}
+    <div style={containerStyle}>
+      <div>
+        {!isCameraOn && <button onClick={startCamera} className={buttonClassName}>Envois moi ton devoir</button>}
+        {isCameraOn && <button onClick={stopCamera} className={buttonClassName}>Stop Camera</button>}
       </div>
       <div>
-        <video ref={videoRef} style={{ display: isCameraOn ? 'block' : 'none', width: '100%',marginBottom:'12px',marginTop:'12px',borderRadius:'5px' }} />
-        {isCameraOn && <button onClick={captureImage} className={`${styles.button} `}>Capture Image</button>} 
+        <video ref={videoRef} style={{ ...videoStyle, display: isCameraOn ? 'block' : 'none' }} />
+        {isCameraOn && <button onClick={captureImage} className={buttonClassName}>Capture Image</button>}
       </div>
     </div>
   );

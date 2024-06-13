@@ -82,6 +82,11 @@
     text-align: left;
   
   }
+
+  .sentImage{
+    width: 100%;
+  }
+  
   
   .messageBot {
     padding: 10px;
@@ -157,6 +162,8 @@
     border-radius: 5px;
     cursor: pointer;
     user-select: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
   .button:hover {
     background-color: #006666;

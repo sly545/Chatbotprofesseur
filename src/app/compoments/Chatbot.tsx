@@ -18,7 +18,6 @@ declare global {
   interface Window {
     SpeechRecognition: any;
     webkitSpeechRecognition: any;
-    
   }
 }
 
@@ -154,7 +153,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
     }
   };
 
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -166,20 +164,21 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
     setCapturedImage(dataUrl);
   };
 
-
-
+  const removeCapturedImage = () => {
+    setCapturedImage(null);
+  };
 
   const handleSendImageWithText = async () => {
     if (!userMessage && !capturedImage) return;
     setIsLoading(true);
-  
+
     const userMessageContent: IMessage = { content: userMessage, role: 'user' };
     if (capturedImage) {
       userMessageContent.imageUrl = capturedImage;
     }
-  
+
     setMessages(prev => [...prev, userMessageContent]);
-  
+
     const context = [
       {
         "role": "system",
@@ -187,11 +186,11 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
       },
       {
         "role": "system",
-        "content": "tu ne devra pas utiliser d'anglisisme tu enseigne a des enfants francais "
+        "content": "tu ne devras pas utiliser d'anglicismes, tu enseignes à des enfants français. Présente les choses de manière simple  evite ce genre de presentation \[ \text{Aire} = \text{longueur} \times \text{largeur} \] ,il faut que tu te refaire au programe de la classe des enfants!"
       },
       {
         "role": "system",
-        "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant son prénom et ajuste tes explications en fonction de l'âge des enfants. Si on t'envoie une photo, tu feras un compliment sur ces vetement ou sont visage si il tenvois un exrcice ne lui donne pas la reponse mais aide le a comprendre avec un autre exemple qui est proche et ensuite traville avec lui en le corrigent!."
+        "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant, son prénom et ajuste tes explications en fonction de l'âge des enfants. Si on t'envoie une photo, tu feras un compliment sur ses vêtements ou son visage. S'il t'envoie un exercice, ne lui donne pas la réponse mais aide-le à comprendre avec un autre exemple qui est proche et ensuite travaille avec lui en le corrigeant."
       },
       ...messages.slice(-5),
       {
@@ -217,10 +216,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
             ]
       }
     ];
-  
+
     try {
       console.log('Sending context to API:', JSON.stringify(context, null, 2));
-  
+
       const response = await axios.post(
         '/api/analyze-image',
         { messages: context },
@@ -231,7 +230,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
           }
         }
       );
-  
+
       const analysisResult = response.data.choices[0].message.content;
       setMessages(prev => [...prev, { content: analysisResult, role: 'assistant' }]);
     } catch (error) {
@@ -242,9 +241,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
       setUserMessage('');
     }
   };
-  
-
-
 
 const images = [
   { src: '/images/lapie1.webp', alt: 'Image 1' },
@@ -255,7 +251,7 @@ const images = [
 ];
 
 return (
-  <div className={styles.chatbotwrap}>
+<div className={styles.chatbotwrap}>
     <div className={styles.conteneurglobal}>
       <div className={styles.sizecarou}>
         <Carrouselle images={images} />
@@ -289,12 +285,12 @@ return (
             className={styles.textarea}
           />
           <button
-              type="button"
-              onClick={handleSendImageWithText}
-              className={styles.button}
-            >
-              Envoyer
-            </button>
+            type="button"
+            onClick={handleSendImageWithText}
+            className={styles.button}
+          >
+            Envoyer
+          </button>
           <div className={styles.espacmentbutton}>
             <button
               type="button"
@@ -310,15 +306,20 @@ return (
             >
               <FontAwesomeIcon icon={faArrowLeft} className={styles.iconStyle} />
             </button>
-           
           </div>
         </form>
         {capturedImage && (
-          <div>
-            <img src={capturedImage} alt="Prévisualisation" style={{ width: '100%'}} />
+          <div style={{ display:'flex',flexDirection:'column',alignItems:'center' }}>
+            <img src={capturedImage} alt="Prévisualisation" style={{ width: '80%',borderRadius:'5px', }} />
+            <button onClick={() => setCapturedImage(null)} className={styles.button}>Supprimer l'image</button>
           </div>
         )}
-        <CameraCapture onCapture={handleImageCapture} />
+        <CameraCapture 
+          onCapture={handleImageCapture} 
+          buttonClassName={styles.button} 
+          videoStyle={{ width: '100%', marginBottom: '5px', marginTop: '5px', borderRadius: '5px' }} 
+          containerStyle={{ marginBottom: '0px' }}
+        />
       </div>
     </div>
   </div>
