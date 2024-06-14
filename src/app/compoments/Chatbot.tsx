@@ -263,7 +263,7 @@ return (
             {msg.content.split('\n').map((line, i) => (
               <React.Fragment key={i}>
                 {line}
-                <br />
+         
               </React.Fragment>
             ))}
             {msg.imageUrl && <img src={msg.imageUrl} alt="Envoyé" className={styles.sentImage} />}
@@ -315,11 +315,12 @@ return (
           </div>
         )}
         <CameraCapture 
-          onCapture={handleImageCapture} 
-          buttonClassName={styles.button} 
-          videoStyle={{ width: '100%', marginBottom: '5px', marginTop: '5px', borderRadius: '5px' }} 
-          containerStyle={{ marginBottom: '0px' }}
-        />
+  onCapture={handleImageCapture} 
+  buttonClassName={styles.button} 
+  videoStyle={{ width: '100%', marginBottom: '5px', marginTop: '5px', borderRadius: '5px' }} 
+  containerStyle={{ marginBottom: '0px' }}
+  countdownClassName={styles.comptarebour} // Ajout de la classe de style pour le compte à rebours
+/>
       </div>
     </div>
   </div>
