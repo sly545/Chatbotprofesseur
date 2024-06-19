@@ -6,6 +6,9 @@ interface CameraCaptureProps {
   videoStyle?: React.CSSProperties; // Style pour la vidéo
   containerStyle?: React.CSSProperties; // Style pour le conteneur de la caméra
   countdownClassName?: string; // Classe pour le style du compte à rebours
+  buttonStyles?: React.CSSProperties; // Nouveau prop pour les styles dynamiques des boutons
+  buttonHoverStyles?: React.CSSProperties; // Nouveau prop pour les styles de survol des boutons
+  countdownStyles?: React.CSSProperties; // Nouveau prop pour les styles dynamiques du compte à rebours
 }
 
 const CameraCapture: React.FC<CameraCaptureProps> = ({
@@ -14,6 +17,9 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({
   videoStyle,
   containerStyle,
   countdownClassName,
+  buttonStyles,
+  buttonHoverStyles,
+  countdownStyles,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
@@ -113,17 +119,45 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({
   return (
     <div style={containerStyle}>
       <div>
-        {!isCameraOn && <button onClick={startCamera} className={buttonClassName}>Envois moi ton devoir</button>}
-        {isCameraOn && <button onClick={stopCamera} className={buttonClassName}>Stop Camera</button>}
+        {!isCameraOn && (
+          <button
+            onClick={startCamera}
+            className={buttonClassName}
+            style={{ ...buttonStyles, transition: 'background-color 0.5s' }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = buttonHoverStyles?.backgroundColor || ''}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = buttonStyles?.backgroundColor || ''}
+          >
+            Envois moi ton devoir
+          </button>
+        )}
+        {isCameraOn && (
+          <button
+            onClick={stopCamera}
+            className={buttonClassName}
+            style={{ ...buttonStyles, transition: 'background-color 0.5s' }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = buttonHoverStyles?.backgroundColor || ''}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = buttonStyles?.backgroundColor || ''}
+          >
+            Stop Camera
+          </button>
+        )}
       </div>
       <div style={{ position: 'relative' }}>
         <video ref={videoRef} style={{ ...videoStyle, display: isCameraOn ? 'block' : 'none' }} />
         {isCameraOn && countdown === null && (
-          <button onClick={startCountdown} className={buttonClassName}>Capture Image</button>
+          <button
+            onClick={startCountdown}
+            className={buttonClassName}
+            style={{ ...buttonStyles, transition: 'background-color 0.5s' }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = buttonHoverStyles?.backgroundColor || ''}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = buttonStyles?.backgroundColor || ''}
+          >
+            Capture Image
+          </button>
         )}
         {countdown !== null && (
-          <div className={countdownClassName} style={{ position: 'absolute', top: '20%', left: '14%', transform: 'translate(-50%, -50%)', zIndex: 1 }}>
-             {countdown}
+          <div className={countdownClassName} style={{ ...countdownStyles, position: 'absolute', top: '20%', left: '14%', transform: 'translate(-50%, -50%)', zIndex: 1, userSelect: 'none' }}>
+            {countdown}
           </div>
         )}
       </div>

@@ -227,5 +227,6 @@
   background-color:  #008b8b; 
   border-radius: 5px;
   display: flex;
+  user-select: none;
 
 }

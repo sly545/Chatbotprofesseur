@@ -33,6 +33,7 @@ export default function Home() {
   const chatbotColors = {
     Foxie: '#c4b291',
     Tigrou: '#008B8B',
+    Gru: 'red',  // Ajout de la couleur pour Gru
     Chatbot: '#007bff',
   };
 
@@ -45,7 +46,7 @@ export default function Home() {
   } as React.CSSProperties;
 
   return (
-    <div style={containerStyle} className="backButtonContainer">
+    <div style={containerStyle} >
       <Menu /> {/* Ajout du composant Menu */}
       <TransitionGroup>
         {activeChatbot ? (
@@ -54,6 +55,8 @@ export default function Home() {
               {activeChatbot === 'Foxie' && <Foxy onBack={handleBack} activeChatbot={activeChatbot} />}
               {activeChatbot === 'Tigrou' && <Tigrou onBack={handleBack} activeChatbot={activeChatbot} />}
               {activeChatbot === 'Chatbot' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
+              {activeChatbot === 'Gru' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
+
             </div>
           </CSSTransition>
         ) : (

@@ -7,7 +7,7 @@ import styles from './selecti.module.css'; // Assure-toi que le chemin est corre
 const professeursData = [
   {
     id: 'Chatbot',
-    nom: 'Lapie',
+    nom: 'Chatbot',
     image: '/images/lapie1.webp',
     description: 'Professeur de mathématiques',
     cardBackground: '#007bff', // Couleur de fond de la carte
@@ -32,6 +32,17 @@ const professeursData = [
     cardBackground: '#1c5c66', // Couleur de fond de la carte
     wrapTextBackground: '#4ECDC4',
     hoverShadowColor: '#1c5c66', // Couleur de fond pour la zone de texte
+ 
+  },
+  //le profeseur de chionis!!!
+  {
+    id: 'Gru',
+    nom: 'Gru',
+    image: '/images/bibi.webp',
+    description: "Professeur de chinois",
+    cardBackground: 'red', // Couleur de fond de la carte
+    wrapTextBackground: 'red',
+    hoverShadowColor: 'pink', // Couleur de fond pour la zone de texte
  
   },
   // Autres professeurs...

@@ -164,9 +164,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack }) => {
     setCapturedImage(dataUrl);
   };
 
-  const removeCapturedImage = () => {
-    setCapturedImage(null);
-  };
+
 
   const handleSendImageWithText = async () => {
     if (!userMessage && !capturedImage) return;

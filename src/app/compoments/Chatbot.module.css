@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: row-reverse;
   align-items: flex-end;
-  box-shadow: 0 4px 11px 0px #007bff;
+  box-shadow: 0 4px 11px 0px;
 }
 
 .sizecarou{
@@ -100,23 +100,24 @@
   text-align: left;
   display: flex;
   flex-direction: column;
+  color: white;
 
 }
 .buttonWithIcon {
   background: none;
   border: none;
-  padding: 6px;
+  padding: 8px;
   margin: 10px;
   cursor: pointer;
-  background-color: #add8e6;
   border-radius: 50%;
   width: 45px;
+
 }
 
 .buttonWithIcon:hover {
   background: none;
   border: none;
-  padding: 6px;
+  padding: 8px;
   margin: 10px;
   cursor: pointer;
   background-color: #0056b3;
@@ -142,9 +143,11 @@
 }
 
 .buttonWithIcon.recognizing {
-  background-color: #1c5c66; /* Changement de couleur */
-  animation: blink 1s infinite; /* Animation de clignotement */
+  animation: blink 1s infinite;/* Changement de couleur */
+  /* Animation de clignotement */
 }
+
+
 @keyframes blink {
   0% { opacity: 1; }
   50% { opacity: 0.5; }
@@ -262,6 +265,11 @@ to {
   width: 100%;
   border-radius: 55px;
 }
+.contenerprewieu{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 /* styles/global.css */
 .backButton {
   position: relative;
@@ -274,6 +282,7 @@ to {
   background-color:  #007bff; /* Utilisez une variable CSS avec une valeur par défaut */
   border-radius: 5px;
   display: flex;
+  user-select: none;
 
 }
 

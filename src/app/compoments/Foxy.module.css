@@ -282,6 +282,7 @@
     background-color:   #c4b291;
     border-radius: 5px;
     display: flex;
+    user-select: none;
   
   }
   
