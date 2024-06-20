@@ -7,7 +7,7 @@ import styles from './selecti.module.css'; // Assure-toi que le chemin est corre
 const professeursData = [
   {
     id: 'Chatbot',
-    nom: 'Chatbot',
+    nom: 'Lapie',
     image: '/images/lapie1.webp',
     description: 'Professeur de mathématiques',
     cardBackground: '#007bff', // Couleur de fond de la carte

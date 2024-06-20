@@ -52,18 +52,18 @@ export default function Home() {
         {activeChatbot ? (
           <CSSTransition key={activeChatbot} timeout={900} classNames="fade">
             <div className={`${styles.chatbotwrap} ${isTransitioning ? styles.hidden : ''}`}>
-              {activeChatbot === 'Foxie' && <Foxy onBack={handleBack} activeChatbot={activeChatbot} />}
-              {activeChatbot === 'Tigrou' && <Tigrou onBack={handleBack} activeChatbot={activeChatbot} />}
+              {activeChatbot === 'Foxie' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
+              {activeChatbot === 'Tigrou' && <Tigrou onBack={handleBack} activeChatbot={activeChatbot} />} {/* Tigrou a son propre composent car il tourne avec l'api de mistral */}
               {activeChatbot === 'Chatbot' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
               {activeChatbot === 'Gru' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
 
             </div>
           </CSSTransition>
         ) : (
-          <CSSTransition key="selection" timeout={900} classNames="fade">
+          <CSSTransition key="selection" timeout={115900} classNames="fade">
             <div className={`${styles.container} ${isTransitioning ? styles.hidden : ''}`}>
               <SelectionPerso onSelect={handleSelect} />
-            </div>
+            </div> 
           </CSSTransition>
         )}
       </TransitionGroup>

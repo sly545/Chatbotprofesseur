@@ -36,7 +36,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const recognitionRef = useRef<any>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
   const chatbotConfig = config[activeChatbot];
   const { images, styles: dynamicStyles } = chatbotConfig;
 
@@ -235,7 +234,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
     
     return (
       <div className={styles.chatbotwrap}>
-      <div className={styles.conteneurglobal} style={{ backgroundColor: dynamicStyles.containerBackgroundColor }}>
+      <div className={styles.conteneurglobal} style={{ backgroundColor: dynamicStyles.conteneurglobalBackgroundColor }}>
         <div className={styles.sizecarou}>
           <Carrouselle images={images} />
           <button 
@@ -264,11 +263,11 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
               {msg.role === 'assistant' && (
                 <button className={styles.buttonWithIcon}
                   onClick={() => fetchAudioFromElevenLabs(msg.content, index)} 
-                  style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor, color: dynamicStyles.buttonWithIconTextColor, transition: 'background-color 0.5s' }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonHoverBackgroundColor}
+                  style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor, }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconBackgroundColor}
                 >
-                  <FontAwesomeIcon icon={faVolumeUp} style={{ color: dynamicStyles.iconColor, fontSize: dynamicStyles.iconSize }} />
+                  <FontAwesomeIcon className={styles.iconStyle} icon={faVolumeUp} style={{ color: dynamicStyles.iconColor, }} />
                 </button>
               )}
             </div>
@@ -295,29 +294,29 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
               Envoyer
             </button>
             <div className={styles.espacmentbutton}>
-            <button
+            <button 
             type="button"
            onClick={startVoiceRecognition}
            className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}
            style={{
         backgroundColor: isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor,
-    color: dynamicStyles.buttonWithIconTextColor,
     transition: 'background-color 0.5s'
   }}
-  onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonHoverBackgroundColor}
+  onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
   onMouseLeave={e => e.currentTarget.style.backgroundColor = isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor}
 >
-  <FontAwesomeIcon icon={faMicrophone} style={{ color: dynamicStyles.iconColor, fontSize: dynamicStyles.iconSize }} />
+  <FontAwesomeIcon className={styles.iconStyle} icon={faMicrophone} style={{ color: dynamicStyles.iconColor, }} />
 </button>
 
-              <button
+
+              <button className={styles.buttonWithIcon}
                 type="button"
                 onClick={onBack}
-                style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor, color: dynamicStyles.buttonWithIconTextColor, border: 'none', padding: '6px', margin: '10px', cursor: 'pointer', borderRadius: '50%', width: '45px', transition: 'background-color 0.5s' }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonHoverBackgroundColor}
+                style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor,  }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
                 onMouseLeave={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconBackgroundColor}
               >
-                <FontAwesomeIcon icon={faArrowLeft} style={{ color: dynamicStyles.iconColor, fontSize: dynamicStyles.iconSize }} />
+                <FontAwesomeIcon className={styles.iconStyle} icon={faArrowLeft} style={{ color: dynamicStyles.iconColor,}} />
               </button>
             </div>
           </form>
@@ -336,15 +335,15 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
             </div>
           )}
           <CameraCapture 
-  onCapture={handleImageCapture} 
-  buttonClassName={styles.button} 
-  videoStyle={{ width: '100%', marginBottom: '5px', marginTop: '5px', borderRadius: '5px' }} 
-  containerStyle={{ marginBottom: '0px' }}
-  countdownClassName={styles.comptarebour}
-  buttonStyles={{ backgroundColor: dynamicStyles.buttonBackgroundColor, color: dynamicStyles.buttonTextColor, transition: 'background-color 0.5s' }}
-  buttonHoverStyles={{ backgroundColor: dynamicStyles.buttonHoverBackgroundColor }}
-  countdownStyles={{ backgroundColor: dynamicStyles.countdownBackgroundColor, color: 'white', padding: '10px', borderRadius: '5px', textAlign: 'center' }}
-/>
+            onCapture={handleImageCapture} 
+            buttonClassName={styles.button} 
+            videoStyle={{ width: '100%', marginBottom: '5px', marginTop: '5px', borderRadius: '5px' }} 
+            containerStyle={{ marginBottom: '0px' }}
+            countdownClassName={styles.comptarebour}
+            buttonStyles={{ backgroundColor: dynamicStyles.buttonBackgroundColor, color: dynamicStyles.buttonTextColor, transition: 'background-color 0.5s' }}
+            buttonHoverStyles={{ backgroundColor: dynamicStyles.buttonHoverBackgroundColor }}
+            countdownStyles={{ backgroundColor: dynamicStyles.countdownBackgroundColor, color: 'white', padding: '10px', borderRadius: '5px', textAlign: 'center' }}
+          />
         </div>
       </div>
     </div>
