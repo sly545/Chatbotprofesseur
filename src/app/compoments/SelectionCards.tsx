@@ -38,11 +38,11 @@ const professeursData = [
   {
     id: 'Gru',
     nom: 'Gru',
-    image: '/images/bibi.webp',
+    image: '/images/grue.webp',
     description: "Professeur de chinois",
     cardBackground: 'red', // Couleur de fond de la carte
-    wrapTextBackground: 'red',
-    hoverShadowColor: 'pink', // Couleur de fond pour la zone de texte
+    wrapTextBackground: '#f6d59a',
+    hoverShadowColor: 'red', // Couleur de fond pour la zone de texte
  
   },
   // Autres professeurs...

@@ -2,8 +2,6 @@
 "use client";
 import React, { useState } from 'react';
 import Chatbot from "./compoments/Chatbot";
-import Tigrou from "./compoments/Tigrou";
-import Foxy from "./compoments/Foxy";
 import SelectionPerso from './compoments/SelectionCards';
 import Menu from './compoments/Menu'; // Import du composant Menu 
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -53,7 +51,7 @@ export default function Home() {
           <CSSTransition key={activeChatbot} timeout={900} classNames="fade">
             <div className={`${styles.chatbotwrap} ${isTransitioning ? styles.hidden : ''}`}>
               {activeChatbot === 'Foxie' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
-              {activeChatbot === 'Tigrou' && <Tigrou onBack={handleBack} activeChatbot={activeChatbot} />} {/* Tigrou a son propre composent car il tourne avec l'api de mistral */}
+              {activeChatbot === 'Tigrou' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />} 
               {activeChatbot === 'Chatbot' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
               {activeChatbot === 'Gru' && <Chatbot onBack={handleBack} activeChatbot={activeChatbot} />}
 

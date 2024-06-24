@@ -5,7 +5,11 @@ import styles from '../compoments/Loader.module.css'; // Assurez-vous de créer 
 const Loader = () => {
   return (
     <div className={styles.loaderContainer}>
-      <div className={styles.spinner}></div>
+      <div className={styles.loaderBubble}>
+        <div className={styles.bubble}></div>
+        <div className={styles.bubble}></div>
+        <div className={styles.bubble}></div>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import styles from '../compoments/Chatbot.module.css'; // Assurez-vous que le chemin est correct
+import styles from '../compoments/Chatbot.module.css';
 import Carrouselle from '../compoments/carrouselle';
 import Loader from '../compoments/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,7 +12,7 @@ interface IMessage {
   content: string;
   audioUrl?: string;
   role: 'user' | 'assistant';
-  imageUrl?: string; // Ajout de la propriété imageUrl
+  imageUrl?: string;
 }
 
 declare global {
@@ -45,24 +45,16 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.lang = 'fr-FR';
       recognitionRef.current.interimResults = false;
-      recognitionRef.current.continuous = false;
+      recognitionRef.current.continuous = true;
 
       recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
+        const transcript = event.results[event.results.length - 1][0].transcript;
         setUserMessage(prevMessage => prevMessage + ' ' + transcript);
-        setIsRecognizing(false);
-        playSound('stop-sound.mp3');
       };
 
       recognitionRef.current.onerror = (event: any) => {
         console.error('Speech Recognition Error', event);
         setIsRecognizing(false);
-      };
-
-      recognitionRef.current.onspeechend = () => {
-        recognitionRef.current?.stop();
-        setIsRecognizing(false);
-        playSound('stop-sound.mp3');
       };
     } else {
       console.warn('Speech Recognition not supported in this browser.');
@@ -161,6 +153,11 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      if (isRecognizing) {
+        recognitionRef.current?.stop();
+        setIsRecognizing(false);
+        playSound('stop-sound.mp3');
+      }
       handleSendImageWithText();
     }
   };
@@ -201,7 +198,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
           : [
               {
                 type: 'text',
-                text: userMessage
+                text: userMessage 
               }
             ]
       }
@@ -272,7 +269,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
               )}
             </div>
           ))}
-          {isLoading && <div className={styles.loaderOverlay}><Loader /></div>}
+          {isLoading && <div className={styles.spaceloder}><Loader /></div>}
           <form className={styles.fromflex}>
             <textarea
               ref={textareaRef}
@@ -293,32 +290,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
             >
               Envoyer
             </button>
-            <div className={styles.espacmentbutton}>
-            <button 
-            type="button"
-           onClick={startVoiceRecognition}
-           className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}
-           style={{
-        backgroundColor: isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor,
-    transition: 'background-color 0.5s'
-  }}
-  onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
-  onMouseLeave={e => e.currentTarget.style.backgroundColor = isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor}
->
-  <FontAwesomeIcon className={styles.iconStyle} icon={faMicrophone} style={{ color: dynamicStyles.iconColor, }} />
-</button>
-
-
-              <button className={styles.buttonWithIcon}
-                type="button"
-                onClick={onBack}
-                style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor,  }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconBackgroundColor}
-              >
-                <FontAwesomeIcon className={styles.iconStyle} icon={faArrowLeft} style={{ color: dynamicStyles.iconColor,}} />
-              </button>
-            </div>
+            
           </form>
           {capturedImage && (
             <div className={styles.contenerprewieu}>
@@ -344,6 +316,32 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
             buttonHoverStyles={{ backgroundColor: dynamicStyles.buttonHoverBackgroundColor }}
             countdownStyles={{ backgroundColor: dynamicStyles.countdownBackgroundColor, color: 'white', padding: '10px', borderRadius: '5px', textAlign: 'center' }}
           />
+          <div className={styles.espacmentbutton}>
+            <button 
+            type="button"
+                 onClick={startVoiceRecognition}
+                 className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}
+                 style={{
+                 backgroundColor: isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor,
+                 transition: 'background-color 0.5s'
+               }}
+               onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor}
+              >
+             <FontAwesomeIcon className={styles.iconStyle} icon={faMicrophone} style={{ color: dynamicStyles.iconColor, }} />
+            </button>
+           
+             <button className={styles.buttonWithIcon}
+                type="button"
+                onClick={onBack}
+                style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor,  }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconBackgroundColor}
+              >
+                <FontAwesomeIcon className={styles.iconStyle} icon={faArrowLeft} style={{ color: dynamicStyles.iconColor,}} />
+               </button>
+            
+            </div>
         </div>
       </div>
     </div>
