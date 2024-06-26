@@ -6,6 +6,10 @@
   margin-left: 10%;
   margin-top: 25px;
 }
+.imgPreval{
+  width: 80%;
+  border-radius: 5px;
+}
 .hidden {
   display: none;
 }
@@ -30,11 +34,6 @@
   width: 70%;
   height: 650px;
 }
-/* Input field focus state */
-.input:focus {
-  border-color: #007bff; /* Highlight color */
-  outline: none;
-  }
   
 .spaceloder{
   display: flex;

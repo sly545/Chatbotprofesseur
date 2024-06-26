@@ -228,6 +228,18 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
       setUserMessage('');
     }
   };
+  function transformTextWithLineBreaks(text: string) {
+    if (!text.trim()) {
+      return null;
+    }
+    return text.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+  }
+
     
     return (
       <div className={styles.chatbotwrap}>
@@ -249,27 +261,30 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
             <div
               key={index}
               className={msg.role === 'user' ? styles.messageUser : styles.messageBot}
-              style={msg.role === 'user' ?  { backgroundColor: dynamicStyles.messageUserBackgroundColor, color: dynamicStyles.messageUserTextColor } : { backgroundColor: dynamicStyles.messageBotBackgroundColor, color: dynamicStyles.messageBotTextColor }}
+              style={msg.role === 'user' ? { backgroundColor: dynamicStyles.messageUserBackgroundColor, color: dynamicStyles.messageUserTextColor } : { backgroundColor: dynamicStyles.messageBotBackgroundColor, color: dynamicStyles.messageBotTextColor }}
             >
-              {msg.content.split('\n').map((line, i) => (
-                <React.Fragment key={i}>
-                  {line}
-                </React.Fragment>
-              ))}
+              {transformTextWithLineBreaks(msg.content)}
               {msg.imageUrl && <img src={msg.imageUrl} alt="Envoyé" className={styles.sentImage} />}
               {msg.role === 'assistant' && (
                 <button className={styles.buttonWithIcon}
                   onClick={() => fetchAudioFromElevenLabs(msg.content, index)} 
-                  style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor, }}
+                  style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor }}
                   onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
                   onMouseLeave={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconBackgroundColor}
                 >
-                  <FontAwesomeIcon className={styles.iconStyle} icon={faVolumeUp} style={{ color: dynamicStyles.iconColor, }} />
+                  <FontAwesomeIcon className={styles.iconStyle} icon={faVolumeUp} style={{ color: dynamicStyles.iconColor }} />
                 </button>
               )}
             </div>
           ))}
-          {isLoading && <div className={styles.spaceloder}><Loader /></div>}
+          {isLoading && (
+            <div className={styles.spaceloder}>
+              <Loader
+                bubbleBackgroundColor={dynamicStyles.loaderBubbleBackgroundColor}
+                bubbleColor={dynamicStyles.bubbleColor}
+              />
+            </div>
+          )}
           <form className={styles.fromflex}>
             <textarea
               ref={textareaRef}
@@ -290,7 +305,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
             >
               Envoyer
             </button>
-            
           </form>
           {capturedImage && (
             <div className={styles.contenerprewieu}>
@@ -318,36 +332,33 @@ const Chatbot: React.FC<ChatbotProps> = ({ onBack, activeChatbot }) => {
           />
           <div className={styles.espacmentbutton}>
             <button 
-            type="button"
-                 onClick={startVoiceRecognition}
-                 className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}
-                 style={{
-                 backgroundColor: isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor,
-                 transition: 'background-color 0.5s'
-               }}
-               onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor}
-              >
-             <FontAwesomeIcon className={styles.iconStyle} icon={faMicrophone} style={{ color: dynamicStyles.iconColor, }} />
+              type="button"
+              onClick={startVoiceRecognition}
+              className={`${styles.buttonWithIcon} ${isRecognizing ? styles.recognizing : ''}`}
+              style={{
+                backgroundColor: isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor,
+                transition: 'background-color 0.5s'
+              }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = isRecognizing ? dynamicStyles.recognizingBackgroundColor : dynamicStyles.buttonWithIconBackgroundColor}
+            >
+              <FontAwesomeIcon className={styles.iconStyle} icon={faMicrophone} style={{ color: dynamicStyles.iconColor }} />
             </button>
-           
-             <button className={styles.buttonWithIcon}
-                type="button"
-                onClick={onBack}
-                style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor,  }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconBackgroundColor}
-              >
-                <FontAwesomeIcon className={styles.iconStyle} icon={faArrowLeft} style={{ color: dynamicStyles.iconColor,}} />
-               </button>
-            
-            </div>
+            <button className={styles.buttonWithIcon}
+              type="button"
+              onClick={onBack}
+              style={{ backgroundColor: dynamicStyles.buttonWithIconBackgroundColor }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconHoverBackgroundColor}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = dynamicStyles.buttonWithIconBackgroundColor}
+            >
+              <FontAwesomeIcon className={styles.iconStyle} icon={faArrowLeft} style={{ color: dynamicStyles.iconColor }} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    
-    );
-    };
+  );
+  };
     
     export default Chatbot;
     

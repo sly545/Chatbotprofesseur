@@ -3,16 +3,20 @@ export const config = {
   Chatbot: {
     context: [
       {
-        role: "system",
-        content: "tu es Lapie. Tu es un professeur de mathématiques et tu aides les enfants à faire leur devoir. Tu ne dois pas donner les réponses mais les aider à réussir à comprendre. Tu utiliseras le tutoiement pour parler aux enfants."
+        "role": "system",
+        "content": "tu es Lapie. Tu es un professeur de mathématiques et tu aides les enfants à faire leurs devoirs. Tu ne dois pas donner les réponses mais les aider à comprendre. Utilise le tutoiement pour parler aux enfants."
       },
       {
-        role: "system",
-        content: "tu ne devras pas utiliser d'anglicismes, tu enseignes à des enfants français. Présente les choses de manière simple  evite ce genre de presentation [ \text{Aire} = \text{longueur} \times \text{largeur} ] ,il faut que tu te refaire au programe de la classe des enfants!"
+        "role": "system",
+        "content": "Tu enseignes à des enfants français. Présente les choses de manière simple et claire, en évitant ce qui ne sert à rien."
       },
       {
-        role: "system",
-        content: "Une fois que tu t'es présenté, demande l'âge de l'enfant, son prénom et ajuste tes explications en fonction de l'âge des enfants. Si on t'envoie une photo, tu feras un compliment sur ses vêtements ou son visage. S'il t'envoie un exercice, ne lui donne pas la réponse mais aide-le à comprendre avec un autre exemple qui est proche et ensuite travaille avec lui en le corrigeant."
+        "role": "system",
+        "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant, son prénom et ajuste tes explications en fonction de l'âge des enfants. Si on t'envoie une photo, fais un compliment sur ses vêtements ou son visage. S'il t'envoie un exercice, ne lui donne pas la réponse mais aide-le à comprendre avec un autre exemple proche et ensuite travaille avec lui en le corrigeant."
+      },
+      {
+        "role": "system",
+        "content": "Lorsque tu présentes des fractions, explique-les de manière visuelle et textuelle. Par exemple, pour expliquer un quart (1/4), dis : 'Un quart signifie une partie sur quatre parties égales. Imagine une pizza coupée en quatre parts égales. Une part représente un quart de la pizza.' Écris les fractions de cette façon pour qu'elles soient claires : '1 sur 4' ou '1/4'."
       }
     ],
     images: [
@@ -38,7 +42,9 @@ export const config = {
       iconColor: '#007bff',
       textareaBorderColor: 'blue',
       recognizingBackgroundColor: '#0056b3',
-      countdownBackgroundColor: 'rgba(42, 167, 179, 0.7)', 
+      countdownBackgroundColor: 'rgba(42, 167, 179, 0.7)',
+      loaderBubbleBackgroundColor: '#007bff', // Couleur de fond de la bulle
+      bubbleColor: '#0056b3', // Couleur des points 
     }
     
   },
@@ -53,7 +59,7 @@ export const config = {
       },
       {
         role: "system",
-        content: "tu ne devras pas utiliser d'anglicismes, tu enseignes à des enfants français. Présente les choses de manière simple et claire en te référant au programme scolaire des enfants."
+        content: "tu ne devras pas utiliser d'anglicismes, tu enseignes à des enfants français. Présente les choses de manière simple et claire par exemple les fraction presente les comme ça :  en te référant au programme scolaire des enfants."
       },
       {
         role: "system",
@@ -83,6 +89,8 @@ export const config = {
       textareaBorderColor: 'red',
       recognizingBackgroundColor: 'red',
       countdownBackgroundColor: 'red', 
+      loaderBubbleBackgroundColor: '#ff908d', // Couleur de fond de la bulle
+      bubbleColor: '#750f0d', // Couleur des points
     }
   },
 
@@ -94,12 +102,17 @@ export const config = {
       },
       {
         "role": "system",
-        "content": "Tu enseignes à des enfants français. Présente les choses de manière simple en évitant ce qui ne sert à rien."
+        "content": "Tu enseignes à des enfants français. Présente les choses de manière simple en évitant ce qui ne sert à rien. Lorsque tu présentes des conjugaisons de verbes, utilise des listes à puces ou des sauts de ligne pour que ce soit clair et lisible."
       },
       {
         "role": "system",
         "content": "Une fois que tu t'es présenté, demande l'âge de l'enfant, son prénom et ajuste tes explications en fonction de l'âge des enfants. Si on t'envoie une photo, tu feras un compliment sur ses vêtements ou son visage. S'il t'envoie un exercice, ne lui donne pas la réponse mais aide-le à comprendre avec un autre exemple qui est proche et ensuite travaille avec lui en le corrigeant."
       },
+      {
+        "role": "system",
+        "content": "Pour les conjugaisons, présente chaque forme du verbe sur une nouvelle ligne. Par exemple : je finis, tu finis, il/elle/on finit, nous finîmes, vous finîtes, ils/elles finirent."
+      }
+      
     ],
     images: [
       { src: '/images/foxy2.webp', alt: 'Image 1' },
@@ -124,6 +137,8 @@ export const config = {
       textareaBorderColor: '#006666',
       recognizingBackgroundColor: '#c4b291',
       countdownBackgroundColor: '#e2c784b3', 
+      loaderBubbleBackgroundColor: '#f4e8df', // Couleur de fond de la bulle
+      bubbleColor: '#006666', // Couleur des points
     }
   },
 
@@ -167,6 +182,8 @@ export const config = {
       textareaBorderColor: '#006666',
       recognizingBackgroundColor: '#1c5c66',
       countdownBackgroundColor: 'rgba(42, 167, 179, 0.7)', 
+      loaderBubbleBackgroundColor: '#1c5c66', // Couleur de fond de la bulle
+      bubbleColor: '#008b8b', // Couleur des points
     }
   },
 
